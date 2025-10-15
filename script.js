@@ -359,7 +359,7 @@ Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan d
         document.getElementById('totalAmountPaket').textContent = 'Rp ' + total.toLocaleString('id-ID');
     }
     
-    // Function to send data to Supabase
+    // Function to send data to Supabase via serverless function
     async function sendDataToSupabase(nama, whatsapp, items, lama, tanggal, total, type) {
         try {
             // Create the data object
@@ -373,7 +373,7 @@ Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan d
                 type: type
             };
             
-            // Send data to Supabase using fetch API
+            // Send data to our serverless function
             const response = await fetch('/api/bookings', {
                 method: 'POST',
                 headers: {
@@ -388,7 +388,7 @@ Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan d
             
             console.log('Data successfully sent to Supabase');
         } catch (error) {
-            console.error('Error sending data to Supabase:', error);
+            console.error('Error sending data:', error);
             alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
         }
     }
