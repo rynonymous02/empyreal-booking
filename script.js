@@ -169,8 +169,8 @@ Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan d
         // Open WhatsApp in new tab
         window.open(whatsappUrl, '_blank');
         
-        // Send data to Google Apps Script
-        sendDataToGoogleAppsScript(nama, whatsapp, items, lama, tanggal, total, 'Sewa Satuan');
+        // Send data to Supabase
+        sendDataToSupabase(nama, whatsapp, items, lama, tanggal, total, 'Sewa Satuan');
         
         // Reset form
         bookingFormSatuan.reset();
@@ -254,8 +254,8 @@ Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan d
         // Open WhatsApp in new tab
         window.open(whatsappUrl, '_blank');
         
-        // Send data to Google Apps Script
-        sendDataToGoogleAppsScript(nama, whatsapp, [{barang: paket.split(' - ')[0], jumlah: jumlah}], lama, tanggal, total, 'Paket Hemat');
+        // Send data to Supabase
+        sendDataToSupabase(nama, whatsapp, [{barang: paket.split(' - ')[0], jumlah: jumlah}], lama, tanggal, total, 'Paket Hemat');
         
         // Reset form
         bookingFormPaket.reset();
@@ -359,47 +359,38 @@ Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan d
         document.getElementById('totalAmountPaket').textContent = 'Rp ' + total.toLocaleString('id-ID');
     }
     
-    // Function to send data to Google Apps Script
-    function sendDataToGoogleAppsScript(nama, whatsapp, items, lama, tanggal, total, type) {
-
-        // Replace this with your deployed Web App URL from Google Apps Script
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxFKFuQK_1fI4J-boFN1DvJ5s4-VK8n_S-1bg4kd6V4Jv7uort5eepFoPigB4_HwXEu/exec'; // <-- change me
-        const data = { nama, whatsapp, items, lama, tanggal, total, type };
-
-        (async () => {
-            try {
-                const resp = await fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                // Try parse JSON response if present
-                let json = null;
-                try { json = await resp.json(); } catch (e) { /* ignore parse errors */ }
-
-                if (!resp.ok) {
-                    console.error('Apps Script responded with non-OK', resp.status, json);
-                    alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
-                    return;
-                }
-
-                // Optional: give user feedback only when server says success
-                if (json && json.status === 'success') {
-                    console.log('Data berhasil ditulis ke spreadsheet');
-                } else {
-                    console.log('Response dari server:', json);
-                }
-            } catch (err) {
-                console.error('Failed to send data to Apps Script:', err);
-                alert('Gagal mengirim data. Periksa koneksi Anda atau setelan Web App.');
+    // Function to send data to Supabase
+    async function sendDataToSupabase(nama, whatsapp, items, lama, tanggal, total, type) {
+        try {
+            // Create the data object
+            const data = {
+                nama: nama,
+                whatsapp: whatsapp,
+                items: items,
+                lama: parseInt(lama),
+                tanggal: tanggal,
+                total: parseInt(total),
+                type: type
+            };
+            
+            // Send data to Supabase using fetch API
+            const response = await fetch('/api/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        })();
+            
+            console.log('Data successfully sent to Supabase');
+        } catch (error) {
+            console.error('Error sending data to Supabase:', error);
+            alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+        }
     }
     
     // Smooth scrolling for navigation links
