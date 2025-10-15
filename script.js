@@ -25,7 +25,13 @@ const itemPrices = {
     "Headlamp Baterai": 5000,
     "Headlamp Charge": 5000,
     "Tiang Flysheet": 5000,
-    "Capit": 3000
+    "Capit": 3000,
+    "Paket Hemat 1": 25000,
+    "Paket Hemat 2": 30000,
+    "Paket Hemat 3": 35000,
+    "Paket Hemat 4": 40000,
+    "Paket Hemat 5": 45000,
+    "Paket Hemat 6": 65000
 };
 
 // Package prices (in IDR per day)
@@ -37,6 +43,9 @@ const packagePrices = {
     "Paket Hemat 5 - Rp 45.000/hari": 45000,
     "Paket Hemat 6 - Rp 65.000/hari": 65000
 };
+
+// Shopping cart array
+let shoppingCart = [];
 
 // Set minimum date for rental to today
 document.addEventListener('DOMContentLoaded', function() {
@@ -55,6 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize hero image slider
     initHeroSlider();
+    
+    // Initialize shopping cart functionality
+    initShoppingCart();
     
     // Toggle between price list views
     const priceToggleInputs = document.querySelectorAll('input[name="price-toggle"]');
@@ -160,9 +172,7 @@ ${itemDetails}
 *Total: Rp ${total.toLocaleString('id-ID')}*
 
 Tanggal sewa: ${tanggal}
-Lama sewa: ${lama} hari
-
-Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan dikenakan denda.`;
+Lama sewa: ${lama} hari`;
         const encodedMessage = encodeURIComponent(message);
         const whatsappUrl = `https://wa.me/6282139024372?text=${encodedMessage}`;
         
@@ -245,9 +255,7 @@ Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan d
 *Total: Rp ${total.toLocaleString('id-ID')}*
 
 Tanggal sewa: ${tanggal}
-Lama sewa: ${lama} hari
-
-Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan dikenakan denda.`;
+Lama sewa: ${lama} hari`;
         const encodedMessage = encodeURIComponent(message);
         const whatsappUrl = `https://wa.me/6282139024372?text=${encodedMessage}`;
         
@@ -547,4 +555,195 @@ function initFadeInAnimations() {
     // Add passive scroll/resize listeners as a fallback
     window.addEventListener('scroll', checkFadeElements, { passive: true });
     window.addEventListener('resize', checkFadeElements);
+}
+
+// Function to initialize shopping cart functionality
+function initShoppingCart() {
+    // Add event listeners to all "Add to Cart" buttons
+    const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const itemName = this.getAttribute('data-item-name');
+            const itemPrice = parseInt(this.getAttribute('data-item-price'));
+            const itemType = this.getAttribute('data-item-type') || 'satuan';
+            
+            // Add item directly to booking form
+            addToBookingForm(itemName, itemPrice, itemType);
+            
+            // Show soft popup notification with "Langsung Booking" button
+            showNotification(`${itemName} telah ditambahkan. Silahkan cek di form booking.`, itemName, itemPrice, itemType);
+        });
+    });
+}
+
+// Function to add item directly to booking form
+function addToBookingForm(itemName, itemPrice, itemType) {
+    // Check if we have paket items
+    if (itemType === 'paket') {
+        // Switch to paket form
+        document.getElementById('booking-paket').checked = true;
+        document.getElementById('bookingFormSatuan').style.display = 'none';
+        document.getElementById('bookingFormPaket').style.display = 'block';
+        
+        // Find and select the paket in dropdown
+        const paketSelect = document.getElementById('paket');
+        if (paketSelect) {
+            const options = paketSelect.querySelectorAll('option');
+            for (let option of options) {
+                if (option.value.includes(itemName)) {
+                    paketSelect.value = option.value;
+                    break;
+                }
+            }
+            // Trigger change event to update total
+            paketSelect.dispatchEvent(new Event('change'));
+        }
+    } else {
+        // Switch to satuan form
+        document.getElementById('booking-satuan').checked = true;
+        document.getElementById('bookingFormSatuan').style.display = 'block';
+        document.getElementById('bookingFormPaket').style.display = 'none';
+        
+        // Add item to satuan form
+        const itemSelection = document.getElementById('itemSelectionSatuan');
+        if (itemSelection) {
+            // Check if item already exists in form
+            let itemExists = false;
+            const existingRows = itemSelection.querySelectorAll('.item-row');
+            
+            for (let row of existingRows) {
+                const select = row.querySelector('.barang-select');
+                if (select && select.value === itemName) {
+                    // Item already exists, increment quantity
+                    const jumlahInput = row.querySelector('.jumlah-input');
+                    if (jumlahInput) {
+                        const currentQuantity = parseInt(jumlahInput.value) || 1;
+                        jumlahInput.value = currentQuantity + 1;
+                    }
+                    itemExists = true;
+                    break;
+                }
+            }
+            
+            // If item doesn't exist, add new row
+            if (!itemExists) {
+                const itemRow = document.createElement('div');
+                itemRow.className = 'item-row';
+                itemRow.innerHTML = `
+                    <select name="barang[]" class="barang-select" required>
+                        <option value="">Pilih Barang</option>
+                        <option value="${itemName}" selected>${itemName}</option>
+                        <option value="Hydropack">Hydropack</option>
+                        <option value="Tracking Pole">Tracking Pole</option>
+                        <option value="Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)">Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)</option>
+                        <option value="Tenda Kapasitas 4–5 (Tendaki Borneo 4)">Tenda Kapasitas 4–5 (Tendaki Borneo 4)</option>
+                        <option value="Tenda Kapasitas 4–5 (Wildshell Jayadipa)">Tenda Kapasitas 4–5 (Wildshell Jayadipa)</option>
+                        <option value="Carrier 60L (Arei Toba 60L)">Carrier 60L (Arei Toba 60L)</option>
+                        <option value="Kursi Lipat">Kursi Lipat</option>
+                        <option value="Meja Lipat">Meja Lipat</option>
+                        <option value="Tripod Kecil">Tripod Kecil</option>
+                        <option value="Grill Pan">Grill Pan</option>
+                        <option value="Kompor Kecil">Kompor Kecil</option>
+                        <option value="Kompor Besar">Kompor Besar</option>
+                        <option value="Cooking Set / Nesting 4 in 1">Cooking Set / Nesting 4 in 1</option>
+                        <option value="Cooking Set / Nesting 3 in 1">Cooking Set / Nesting 3 in 1</option>
+                        <option value="Tripod Besar">Tripod Besar</option>
+                        <option value="Sleeping Bag Polar Biasa">Sleeping Bag Polar Biasa</option>
+                        <option value="Sleeping Bag Polar Bulu">Sleeping Bag Polar Bulu</option>
+                        <option value="Flysheet 3x4">Flysheet 3x4</option>
+                        <option value="Kuas">Kuas</option>
+                        <option value="Bantal Tiup">Bantal Tiup</option>
+                        <option value="Matras Spon">Matras Spon</option>
+                        <option value="Lampu Tenda">Lampu Tenda</option>
+                        <option value="Headlamp Baterai">Headlamp Baterai</option>
+                        <option value="Headlamp Charge">Headlamp Charge</option>
+                        <option value="Tiang Flysheet">Tiang Flysheet</option>
+                        <option value="Capit">Capit</option>
+                    </select>
+                    <input type="number" name="jumlah[]" class="jumlah-input" placeholder="Jumlah" min="1" value="1">
+                    <button type="button" class="remove-item btn-secondary">Hapus</button>
+                `;
+                
+                itemSelection.appendChild(itemRow);
+                
+                // Add event listener to remove button
+                const removeButton = itemRow.querySelector('.remove-item');
+                if (removeButton) {
+                    removeButton.addEventListener('click', function() {
+                        // Only remove if there's more than one item row
+                        if (document.querySelectorAll('#itemSelectionSatuan .item-row').length > 1) {
+                            this.closest('.item-row').remove();
+                            calculateTotalSatuan(); // Recalculate total when item removed
+                        } else {
+                            alert('Minimal harus ada satu barang yang disewa!');
+                        }
+                    });
+                }
+            }
+            
+            // Trigger change event to update total
+            itemSelection.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    // Note: Removed automatic scrolling to booking form
+    // Users can now click "Langsung Booking" in the popup notification to scroll to the form
+}
+
+// Function to show soft popup notification
+function showNotification(message, itemName, itemPrice, itemType) {
+    // Remove any existing notifications
+    const existingNotification = document.getElementById('cart-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.id = 'cart-notification';
+    notification.className = 'cart-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <p>${message}</p>
+            <button id="langsung-booking" class="btn-primary">Langsung Booking</button>
+        </div>
+    `;
+    
+    // Add to document
+    document.body.appendChild(notification);
+    
+    // Fade in
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    // Add event listener to the "Langsung Booking" button
+    const langsungBookingBtn = notification.querySelector('#langsung-booking');
+    if (langsungBookingBtn) {
+        langsungBookingBtn.addEventListener('click', function() {
+            // Scroll to booking form
+            const bookingSection = document.getElementById('booking');
+            if (bookingSection) {
+                bookingSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Remove notification
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        });
+    }
+    
+    // Auto remove after 3 seconds if not clicked (as per memory requirement)
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
 }
