@@ -358,38 +358,45 @@ Catatan: Jika telat mengembalikan barang atau ada barang yang rusak, maka akan d
     
     // Function to send data to Google Apps Script
     function sendDataToGoogleAppsScript(nama, whatsapp, items, lama, tanggal, total, type) {
-        // TO CONNECT TO GOOGLE APPS SCRIPT:
-        // 1. Create a Google Apps Script project (script.google.com)
-        // 2. Replace the default code with the provided code from README.md
-        // 3. Deploy as Web App with access to "Anyone"
-        // 4. Copy the Web App URL
-        // 5. Uncomment the lines below and replace 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL' 
-        //    with your actual Web App URL
-    
-        
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxFKFuQK_1fI4J-boFN1DvJ5s4-VK8n_S-1bg4kd6V4Jv7uort5eepFoPigB4_HwXEu/exec';
-        
+
+        // Replace this with your deployed Web App URL from Google Apps Script
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxFKFuQK_1fI4J-boFN1DvJ5s4-VK8n_S-1bg4kd6V4Jv7uort5eepFoPigB4_HwXEu/exec'; // <-- change me
         const data = { nama, whatsapp, items, lama, tanggal, total, type };
-        
-        fetch(scriptURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Pesanan Anda telah dikirim! Silakan cek WhatsApp Anda untuk melanjutkan proses booking.');
-            } else {
-                throw new Error('Network response was not ok');
+
+        (async () => {
+            try {
+                const resp = await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                // Try parse JSON response if present
+                let json = null;
+                try { json = await resp.json(); } catch (e) { /* ignore parse errors */ }
+
+                if (!resp.ok) {
+                    console.error('Apps Script responded with non-OK', resp.status, json);
+                    alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+                    return;
+                }
+
+                // Optional: give user feedback only when server says success
+                if (json && json.status === 'success') {
+                    console.log('Data berhasil ditulis ke spreadsheet');
+                } else {
+                    console.log('Response dari server:', json);
+                }
+            } catch (err) {
+                console.error('Failed to send data to Apps Script:', err);
+                alert('Gagal mengirim data. Periksa koneksi Anda atau setelan Web App.');
             }
-        })
-        .catch(error => {
-            console.error('Error sending data to Google Apps Script:', error);
-            alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
-        });
-    
+        })();
     }
     
     // Smooth scrolling for navigation links
