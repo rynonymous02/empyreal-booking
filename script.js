@@ -53,6 +53,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize number-only input for phone fields
     initPhoneNumberValidation();
     
+    // Initialize hero image slider
+    initHeroSlider();
+    
     // Toggle between price list views
     const priceToggleInputs = document.querySelectorAll('input[name="price-toggle"]');
     priceToggleInputs.forEach(input => {
@@ -486,6 +489,28 @@ function initMobileMenu() {
             });
         });
     });
+}
+
+// Function to initialize hero image slider with Ken Burns effect
+function initHeroSlider() {
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+    
+    function showSlide(index) {
+        // Remove active class from all slides
+        slides.forEach(slide => slide.classList.remove('active'));
+        
+        // Add active class to current slide
+        slides[index].classList.add('active');
+    }
+    
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+    
+    // Change slide every 5 seconds
+    setInterval(nextSlide, 5000);
 }
 
 // Function to initialize fade-in animations
