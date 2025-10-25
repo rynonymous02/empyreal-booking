@@ -709,11 +709,13 @@ input:focus, select:focus {
 }
 
 /* Multi Item Selection */
+#itemSelectionSatuan {
+    width: 100%;
+}
+
 .item-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    align-items: center;
+    width: 100%;
+    display: block;
 }
 
 .item-row select, .item-row input {
@@ -734,6 +736,7 @@ input:focus, select:focus {
 }
 
 .btn-add-to-cart {
+    flex: 1;
     background-color: #27ae60;
     color: white;
     border: none;
@@ -742,12 +745,24 @@ input:focus, select:focus {
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s;
-    width: 100%;
-    margin-top: 10px;
+    height: fit-content;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .btn-add-to-cart:hover {
     background-color: #219653;
+}
+
+.btn-add-to-cart .cart-icon {
+    font-size: 1.2rem;
+}
+
+.btn-add-to-cart .cart-text {
+    display: inline;
 }
 
 #langsung-booking {
@@ -868,6 +883,29 @@ footer {
     .item-row select, .item-row input, .item-row .remove-item {
         flex: none;
     }
+    
+    .add-to-cart-controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .quantity-control {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .btn-add-to-cart {
+        flex: 0 0 auto;
+        padding: 8px 12px;
+    }
+    
+    .btn-add-to-cart .cart-text {
+        display: none;
+    }
+    
+    .btn-add-to-cart .cart-icon {
+        margin-right: 0;
+    }
 }
 
 @media (max-width: 480px) {
@@ -921,6 +959,40 @@ footer {
         margin: 10px 10px;
         padding-left: 10px;
         line-height: 1.3;
+    }
+    
+    .add-to-cart-controls {
+        flex-direction: row;
+        gap: 5px;
+    }
+    
+    .quantity-control {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .quantity-label {
+        font-size: 0.8rem;
+    }
+    
+    .quantity-input {
+        width: 50px;
+        padding: 6px;
+        font-size: 0.9rem;
+    }
+    
+    .availability-info {
+        font-size: 0.8rem;
+        text-align: right;
+        flex: 1;
+    }
+    
+    .available-quantity {
+        font-size: 0.8rem;
+    }
+    
+    .btn-add-to-cart {
+        padding: 6px 10px;
     }
 }
 
@@ -996,4 +1068,137 @@ footer {
 .fade-in.appear {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Availability info styles */
+.availability-info {
+    text-align: right;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin: 5px 0;
+}
+
+.available-quantity {
+    font-weight: bold;
+    color: #27ae60;
+}
+
+/* Add to cart controls */
+.add-to-cart-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.quantity-control {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.quantity-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    white-space: nowrap;
+}
+
+.quantity-input {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.btn-add-to-cart {
+    flex: 1;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    height: fit-content;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add-to-cart:hover {
+    background-color: #219653;
+}
+
+.btn-add-to-cart .cart-icon {
+    font-size: 1.2rem;
+}
+
+.btn-add-to-cart .cart-text {
+    display: inline;
+}
+
+/* New styles for item display in booking form */
+.item-placeholder {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.item-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.item-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #2c3e50;
+    flex: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-price {
+    color: #3498db;
+    font-size: 0.9rem;
+    flex: 1;
+    text-align: center;
+}
+
+.item-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    text-align: right;
+}
+
+.item-controls .jumlah-input {
+    font-weight: bold;
+    color: #2c3e50;
+    min-width: 20px;
+    display: inline-block;
+}
+
+.item-controls .remove-item {
+    padding: 5px 10px;
+    font-size: 0.9rem;
 }

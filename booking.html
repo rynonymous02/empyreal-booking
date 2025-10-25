@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empyreal Outdoor - Booking</title>
+    <link rel="icon" type="image/webp" href="images/logo.webp">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.webp" alt="Empyreal Outdoor Logo" class="logo-img">
+                <span class="empyreal">Empyreal</span>
+                <span class="outdoor">Outdoor</span>
+            </div>
+            <div class="menu-toggle">
+                <div class="hamburger"></div>
+                <div class="hamburger"></div>
+                <div class="hamburger"></div>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#location">Lokasi</a></li>
+                    <li><a href="booking.html">Booking</a></li>
+                    <li><a href="booking.html">Pricelist</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Price List Section -->
+    <section id="pricelist" class="price-list fade-in">
+        <div class="container">
+            <h2 class="section-title">Daftar Harga</h2>
+            <div class="toggle-container">
+                <div class="toggle-switch">
+                    <input type="radio" id="satuan" name="price-toggle" value="satuan" checked>
+                    <label for="satuan">Sewa Satuan</label>
+                    <input type="radio" id="paket" name="price-toggle" value="paket">
+                    <label for="paket">Paket Hemat</label>
+                </div>
+            </div>
+            
+            <!-- Satuan Items -->
+            <div id="satuan-items" class="price-items-container">
+                <div class="price-table">
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-05.webp" alt="Tenda" class="price-icon">
+                            <h3>Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)</h3>
+                        </div>
+                        <p class="price">Rp 35.000/hari</p>
+                        <ul>
+                            <li>Kapasitas: 6-8 orang</li>
+                            <li>Waterproof</li>
+                            <li>Termasuk pasak & tali</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">1</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="1">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)" data-item-price="35000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-06.webp" alt="Tenda" class="price-icon">
+                            <h3>Tenda Kapasitas 4–5 (Tendaki Borneo 4)</h3>
+                        </div>
+                        <p class="price">Rp 29.000/hari</p>
+                        <ul>
+                            <li>Kapasitas: 4-5 orang</li>
+                            <li>Waterproof</li>
+                            <li>Termasuk pasak & tali</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="3">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Tenda Kapasitas 4–5 (Tendaki Borneo 4)" data-item-price="29000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-07.webp" alt="Tenda" class="price-icon">
+                            <h3>Tenda Kapasitas 4–5 (Wildshell Jayadipa)</h3>
+                        </div>
+                        <p class="price">Rp 29.000/hari</p>
+                        <ul>
+                            <li>Kapasitas: 4-5 orang</li>
+                            <li>Waterproof</li>
+                            <li>Termasuk pasak & tali</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="3">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Tenda Kapasitas 4–5 (Wildshell Jayadipa)" data-item-price="29000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-08.webp" alt="Carrier" class="price-icon">
+                            <h3>Carrier 60L (Arei Toba 60L)</h3>
+                        </div>
+                        <p class="price">Rp 15.000/hari</p>
+                        <ul>
+                            <li>Kapasitas: 60 liter</li>
+                            <li>Berat: 1.8 kg</li>
+                            <li>Ergonomic design</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="2">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Carrier 60L (Arei Toba 60L)" data-item-price="15000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-09.webp" alt="Kursi Lipat" class="price-icon">
+                            <h3>Kursi Lipat</h3>
+                        </div>
+                        <p class="price">Rp 9.000/hari</p>
+                        <ul>
+                            <li>Bahan: Aluminium & Polyester</li>
+                            <li>Berat: 1.5 kg</li>
+                            <li>Mudah dilipat & dibawa</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">10</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="10">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Kursi Lipat" data-item-price="9000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-10.webp" alt="Meja Lipat" class="price-icon">
+                            <h3>Meja Lipat</h3>
+                        </div>
+                        <p class="price">Rp 9.000/hari</p>
+                        <ul>
+                            <li>Bahan: Aluminium & PVC</li>
+                            <li>Ukuran: 60 x 60 cm</li>
+                            <li>Mudah dilipat & dibawa</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">5</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="5">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Meja Lipat" data-item-price="9000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-11.webp" alt="Tripod Kecil" class="price-icon">
+                            <h3>Tripod Kecil</h3>
+                        </div>
+                        <p class="price">Rp 8.000/hari</p>
+                        <ul>
+                            <li>Bahan: Aluminium</li>
+                            <li>Tinggi: 120 cm</li>
+                            <li>Ringan & stabil</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="2">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Tripod Kecil" data-item-price="8000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-11.webp" alt="Tripod Besar" class="price-icon">
+                            <h3>Tripod Besar</h3>
+                        </div>
+                        <p class="price">Rp 15.000/hari</p>
+                        <ul>
+                            <li>Bahan: Aluminium</li>
+                            <li>Tinggi: 150 cm</li>
+                            <li>Stabil & kokoh</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="2">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Tripod Besar" data-item-price="15000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-12.webp" alt="Grill Pan" class="price-icon">
+                            <h3>Grill Pan</h3>
+                        </div>
+                        <p class="price">Rp 10.000/hari</p>
+                        <ul>
+                            <li>Bahan: Cast Iron</li>
+                            <li>Ukuran: 30 cm</li>
+                            <li>Mudah dibersihkan</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="2">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Grill Pan" data-item-price="10000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-13.webp" alt="Kompor Kecil" class="price-icon">
+                            <h3>Kompor Kecil</h3>
+                        </div>
+                        <p class="price">Rp 9.000/hari</p>
+                        <ul>
+                            <li>Bahan: Stainless Steel</li>
+                            <li>Berat: 0.3 kg</li>
+                            <li>Hemat bahan bakar</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">4</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="4">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Kompor Kecil" data-item-price="9000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-14.webp" alt="Kompor Besar" class="price-icon">
+                            <h3>Kompor Besar</h3>
+                        </div>
+                        <p class="price">Rp 12.000/hari</p>
+                        <ul>
+                            <li>Bahan: Stainless Steel</li>
+                            <li>Berat: 0.8 kg</li>
+                            <li>Daya besar</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="2">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Kompor Besar" data-item-price="12000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-15.webp" alt="Cooking Set" class="price-icon">
+                            <h3>Cooking Set / Nesting 4 in 1</h3>
+                        </div>
+                        <p class="price">Rp 13.000/hari</p>
+                        <ul>
+                            <li>Set lengkap masak 4 in 1</li>
+                            <li>Mudah dibawa</li>
+                            <li>Anti lengket</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="3">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Cooking Set / Nesting 4 in 1" data-item-price="13000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-16.webp" alt="Cooking Set" class="price-icon">
+                            <h3>Cooking Set / Nesting 3 in 1</h3>
+                        </div>
+                        <p class="price">Rp 13.000/hari</p>
+                        <ul>
+                            <li>Set lengkap masak 3 in 1</li>
+                            <li>Mudah dibawa</li>
+                            <li>Anti lengket</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="3">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Cooking Set / Nesting 3 in 1" data-item-price="13000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-18.webp" alt="Sleeping Bag Polar" class="price-icon">
+                            <h3>Sleeping Bag Polar Biasa</h3>
+                        </div>
+                        <p class="price">Rp 8.000/hari</p>
+                        <ul>
+                            <li>Bahan: Polyester Polar</li>
+                            <li>Suhu: 5°C - 15°C</li>
+                            <li>Berat: 1.2 kg</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="2">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Sleeping Bag Polar Biasa" data-item-price="8000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-19.webp" alt="Sleeping Bag Bulu" class="price-icon">
+                            <h3>Sleeping Bag Polar Bulu</h3>
+                        </div>
+                        <p class="price">Rp 10.000/hari</p>
+                        <ul>
+                            <li>Bahan: Bulu Angsa</li>
+                            <li>Suhu: -5°C - 5°C</li>
+                            <li>Berat: 1.5 kg</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">4</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="4">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Sleeping Bag Polar Bulu" data-item-price="10000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-21.webp" alt="Flysheet" class="price-icon">
+                            <h3>Flysheet 3x4</h3>
+                        </div>
+                        <p class="price">Rp 10.000/hari</p>
+                        <ul>
+                            <li>Waterproof 100%</li>
+                            <li>Ukuran: 3x4 meter</li>
+                            <li>Termasuk pasak & tali</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">1</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="1">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Flysheet 3x4" data-item-price="10000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-22.webp" alt="Kuas" class="price-icon">
+                            <h3>Kuas</h3>
+                        </div>
+                        <p class="price">Rp 3.000/hari</p>
+                        <ul>
+                            <li>Bahan: Bulu sintetis</li>
+                            <li>Ukuran: 5 cm</li>
+                            <li>Mudah dibersihkan</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="3">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Kuas" data-item-price="3000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-23.webp" alt="Bantal Tiup" class="price-icon">
+                            <h3>Bantal Tiup</h3>
+                        </div>
+                        <p class="price">Rp 3.000/hari</p>
+                        <ul>
+                            <li>Bahan: PVC</li>
+                            <li>Ukuran: 40x60 cm</li>
+                            <li>Mudah dibawa</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">6</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="6">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Bantal Tiup" data-item-price="3000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-24.webp" alt="Matras" class="price-icon">
+                            <h3>Matras Spon</h3>
+                        </div>
+                        <p class="price">Rp 4.000/hari</p>
+                        <ul>
+                            <li>Bahan: PVC Foam</li>
+                            <li>Ukuran: 173 x 51 cm</li>
+                            <li>Berat: 0.8 kg</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">6</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="6">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Matras Spon" data-item-price="4000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-25.webp" alt="Lampu Tenda" class="price-icon">
+                            <h3>Lampu Tenda</h3>
+                        </div>
+                        <p class="price">Rp 5.000/hari</p>
+                        <ul>
+                            <li>LED 1000 lumens</li>
+                            <li>Baterai tahan 8 jam</li>
+                            <li>Mudah digantung</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">6</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="6">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Lampu Tenda" data-item-price="5000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-03.webp" alt="Headlamp Baterai" class="price-icon">
+                            <h3>Headlamp Baterai</h3>
+                        </div>
+                        <p class="price">Rp 5.000/hari</p>
+                        <ul>
+                            <li>LED 200 lumens</li>
+                            <li>Baterai tahan 6 jam</li>
+                            <li>Ringan & nyaman</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="3">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Headlamp Baterai" data-item-price="5000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-02.webp" alt="Headlamp Charge" class="price-icon">
+                            <h3>Headlamp Charge</h3>
+                        </div>
+                        <p class="price">Rp 5.000/hari</p>
+                        <ul>
+                            <li>LED 200 lumens</li>
+                            <li>USB chargeable</li>
+                            <li>Ringan & nyaman</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">4</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="4">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Headlamp Charge" data-item-price="5000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-20.webp" alt="Tiang Flysheet" class="price-icon">
+                            <h3>Tiang Flysheet</h3>
+                        </div>
+                        <p class="price">Rp 5.000/hari</p>
+                        <ul>
+                            <li>Bahan: Fiberglass</li>
+                            <li>Tinggi: 150 cm</li>
+                            <li>Ringan & kokoh</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="2">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Tiang Flysheet" data-item-price="5000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-26.webp" alt="Capit" class="price-icon">
+                            <h3>Capit</h3>
+                        </div>
+                        <p class="price">Rp 3.000/hari</p>
+                        <ul>
+                            <li>Bahan: Stainless Steel</li>
+                            <li>Panjang: 20 cm</li>
+                            <li>Anti karat</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="3">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Capit" data-item-price="3000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-01.webp" alt="Hydropack" class="price-icon">
+                            <h3>Hydropack</h3>
+                        </div>
+                        <p class="price">Rp 10.000/hari</p>
+                        <ul>
+                            <li>Kapasitas: 3L</li>
+                            <li>Bahan: Polyester</li>
+                            <li>Mudah dibawa</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="2">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Hydropack" data-item-price="10000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/item-04.webp" alt="Tracking Pole" class="price-icon">
+                            <h3>Tracking Pole</h3>
+                        </div>
+                        <p class="price">Rp 10.000/hari</p>
+                        <ul>
+                            <li>Bahan: Aluminium</li>
+                            <li>Tinggi: 120 cm</li>
+                            <li>Ringan & stabil</li>
+                        </ul>
+                        <div class="availability-info">Tersedia: <span class="available-quantity">5</span> unit</div>
+                        <div class="add-to-cart-controls">
+                            <div class="quantity-control">
+                                <label class="quantity-label">Jumlah barang</label>
+                                <input type="number" class="quantity-input" value="1" min="1" max="5">
+                            </div>
+                            <button class="btn-add-to-cart" data-item-name="Tracking Pole" data-item-price="10000">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paket Items -->
+            <div id="paket-items" class="price-items-container" style="display: none;">
+                <div class="price-table">
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/paket-hemat01.webp" alt="Paket" class="price-icon">
+                           
+                        </div>
+                        <div class="add-to-cart-controls">
+                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 1" data-item-price="25000" data-item-type="paket">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/paket-hemat02.webp" alt="Paket" class="price-icon">
+                        </div>
+                        <div class="add-to-cart-controls">
+                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 2" data-item-price="30000" data-item-type="paket">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/paket-hemat03.webp" alt="Paket" class="price-icon">
+                        </div>
+                        <ul>
+                        </ul>
+                        <div class="add-to-cart-controls">
+                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 3" data-item-price="35000" data-item-type="paket">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/paket-hemat04.webp" alt="Paket" class="price-icon">
+                        </div>
+                        <div class="add-to-cart-controls">
+                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 4" data-item-price="40000" data-item-type="paket">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/paket-hemat05.webp" alt="Paket" class="price-icon">
+                        </div>
+                        </ul>
+                        <div class="add-to-cart-controls">
+                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 5" data-item-price="45000" data-item-type="paket">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-header">
+                            <img src="images/paket-hemat06.webp" alt="Paket" class="price-icon">
+                        </div>
+                        <div class="add-to-cart-controls">
+                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 6" data-item-price="65000" data-item-type="paket">
+                                <i class="fas fa-shopping-cart cart-icon"></i>
+                                <span class="cart-text">Tambah ke Keranjang</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Form Section -->
+    <section id="booking" class="booking-form fade-in">
+        <div class="container">
+            <h2 class="section-title">Form Booking</h2>
+            
+            <div class="toggle-container">
+                <div class="toggle-switch">
+                    <input type="radio" id="booking-satuan" name="booking-toggle" value="satuan" checked>
+                    <label for="booking-satuan">Sewa Satuan</label>
+                    <input type="radio" id="booking-paket" name="booking-toggle" value="paket">
+                    <label for="booking-paket">Paket Hemat</label>
+                </div>
+            </div>
+            
+            <!-- Satuan Booking Form -->
+            <form id="bookingFormSatuan" class="fade-in">
+                <div class="form-group">
+                    <label for="nama-satuan">Nama Lengkap</label>
+                    <input type="text" id="nama-satuan" name="nama" required>
+                </div>
+                <div class="form-group">
+                    <label for="whatsapp-satuan">Nomor WhatsApp</label>
+                    <input type="tel" id="whatsapp-satuan" name="whatsapp" required>
+                </div>
+                
+                <!-- Multi Item Selection -->
+                <div class="form-group">
+                    <label>Barang yang Disewa</label>
+                    <div id="itemSelectionSatuan">
+                        <div class="item-placeholder">Belum ada barang yang ditambahkan</div>
+                    </div>
+                    <button type="button" id="addItemSatuan" class="btn-secondary" style="display:none;">Tambah Barang</button>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="lama-satuan">Lama Sewa (hari)</label>
+                        <input type="number" id="lama-satuan" name="lama" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggal-satuan">Tanggal Sewa</label>
+                        <input type="date" id="tanggal-satuan" name="tanggal" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="total-price">
+                        <h3>Total Estimasi: <span id="totalAmountSatuan">Rp 0</span></h3>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-submit">Kirim Pesanan</button>
+            </form>
+            
+            <!-- Paket Booking Form -->
+            <form id="bookingFormPaket" style="display: none;" class="fade-in">
+                <div class="form-group">
+                    <label for="nama-paket">Nama Lengkap</label>
+                    <input type="text" id="nama-paket" name="nama" required>
+                </div>
+                <div class="form-group">
+                    <label for="whatsapp-paket">Nomor WhatsApp</label>
+                    <input type="tel" id="whatsapp-paket" name="whatsapp" required>
+                </div>
+                
+                <!-- Multi Item Selection for Paket -->
+                <div class="form-group">
+                    <label>Barang yang Disewa</label>
+                    <div id="itemSelectionPaket">
+                        <div class="item-placeholder">Belum ada paket yang ditambahkan</div>
+                    </div>
+                    <button type="button" id="addItemPaket" class="btn-secondary" style="display:none;">Tambah Paket</button>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="lama-paket">Lama Sewa (hari)</label>
+                        <input type="number" id="lama-paket" name="lama" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggal-paket">Tanggal Sewa</label>
+                        <input type="date" id="tanggal-paket" name="tanggal" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="total-price">
+                        <h3>Total Estimasi: <span id="totalAmountPaket">Rp 0</span></h3>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-submit">Kirim Pesanan</button>
+            </form>
+            
+            <div class="form-note">
+                <p><strong>Catatan:</strong></p>
+                <ol>
+                    <li>Mengisi form dianggap sudah melakukan booking.</li>
+                    <li>Pembatalan kurang dari H-1 dikenakan biaya 30% dari harga sewa.</li>
+                    <li>Keterlambatan pengembalian atau kerusakan barang akan dikenakan denda.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="fade-in">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/logo.webp" alt="Empyreal Outdoor Logo" class="logo-img">
+                    <p>Rental perlengkapan outdoor terpercaya untuk petualangan Anda</p>
+                </div>
+                <div class="footer-contact">
+                    <h3>Kontak</h3>
+                    <p><i class="fab fa-whatsapp"></i> +62821-3902-4372</p>
+                    <p><i class="fab fa-instagram"></i> <a href="https://www.instagram.com/empyrealoutdoor?igsh=NzA4aG1sdnp6MmI4" target="_blank">@empyrealoutdoor</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Empyreal Outdoor. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="booking.js"></script>
+</body>
+</html>
