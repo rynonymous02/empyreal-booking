@@ -645,16 +645,23 @@ label {
     color: #2c3e50;
 }
 
-input, select {
+input, select, textarea {
     width: 100%;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
     transition: border-color 0.3s;
+    font-family: 'Poppins', 'PeaceSans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-input:focus, select:focus {
+textarea {
+    min-height: 100px;
+    min-width: 100px;
+    resize: none;
+}
+
+input:focus, select:focus, textarea:focus {
     border-color: #3498db;
     outline: none;
 }

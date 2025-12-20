@@ -166,6 +166,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get form values
         const nama = document.getElementById('nama-satuan').value;
         const whatsapp = document.getElementById('whatsapp-satuan').value;
+        const alamat = document.getElementById('alamat-satuan').value;
+        const destinasi = document.getElementById('destinasi-satuan').value;
+        const jamAmbil = document.getElementById('jam-ambil-satuan').value;
         const lama = document.getElementById('lama-satuan').value;
         const tanggal = document.getElementById('tanggal-satuan').value;
         
@@ -176,6 +179,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Validate form
         if (!nama || !whatsapp || !lama || !tanggal) {
             alert('Harap lengkapi semua field!');
+            return;
+        }
+        
+        // Validate time format (24-hour format HH:MM)
+        const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+        if (!timeRegex.test(jamAmbil)) {
+            alert('Format jam tidak valid! Harap gunakan format 24-jam (HH:MM), contoh: 14:30');
             return;
         }
         
@@ -218,18 +228,18 @@ ${itemDetails}
 *Total: Rp ${total.toLocaleString('id-ID')}*
 
 Tanggal sewa: ${tanggal}
-Lama sewa: ${lama} hari`;
+Lama sewa: ${lama} hari
+Alamat: ${alamat}
+Destinasi: ${destinasi}
+Estimasi Jam Pengambilan: ${jamAmbil}`;
         const encodedMessage = encodeURIComponent(message);
         const whatsappUrl = `https://wa.me/6282139024372?text=${encodedMessage}`;
         
         // Open WhatsApp in new tab
         window.open(whatsappUrl, '_blank');
         
-        // Send data to Supabase
-        sendDataToSupabase(nama, whatsapp, items, lama, tanggal, total, 'Sewa Satuan');
-        
-        // Send data to Google Apps Script (if configured)
-        sendDataToGoogleAppsScript(nama, whatsapp, items, lama, tanggal, total, 'Sewa Satuan');
+        // Send data to Google Apps Script
+        sendDataToGoogleAppsScript(nama, whatsapp, alamat, destinasi, jamAmbil, items, lama, tanggal, total, 'Sewa Satuan');
         
         // Reset form
         bookingFormSatuan.reset();
@@ -247,6 +257,9 @@ Lama sewa: ${lama} hari`;
         // Get form values
         const nama = document.getElementById('nama-paket').value;
         const whatsapp = document.getElementById('whatsapp-paket').value;
+        const alamat = document.getElementById('alamat-paket').value;
+        const destinasi = document.getElementById('destinasi-paket').value;
+        const jamAmbil = document.getElementById('jam-ambil-paket').value;
         const lama = document.getElementById('lama-paket').value;
         const tanggal = document.getElementById('tanggal-paket').value;
         
@@ -257,6 +270,13 @@ Lama sewa: ${lama} hari`;
         // Validate form
         if (!nama || !whatsapp || !lama || !tanggal) {
             alert('Harap lengkapi semua field!');
+            return;
+        }
+        
+        // Validate time format (24-hour format HH:MM)
+        const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+        if (!timeRegex.test(jamAmbil)) {
+            alert('Format jam tidak valid! Harap gunakan format 24-jam (HH:MM), contoh: 14:30');
             return;
         }
         
@@ -299,18 +319,18 @@ ${itemDetails}
 *Total: Rp ${total.toLocaleString('id-ID')}*
 
 Tanggal sewa: ${tanggal}
-Lama sewa: ${lama} hari`;
+Lama sewa: ${lama} hari
+Alamat: ${alamat}
+Destinasi: ${destinasi}
+Estimasi Jam Pengambilan: ${jamAmbil}`;
         const encodedMessage = encodeURIComponent(message);
         const whatsappUrl = `https://wa.me/6282139024372?text=${encodedMessage}`;
         
         // Open WhatsApp in new tab
         window.open(whatsappUrl, '_blank');
         
-        // Send data to Supabase
-        sendDataToSupabase(nama, whatsapp, items, lama, tanggal, total, 'Paket Hemat');
-        
-        // Send data to Google Apps Script (if configured)
-        sendDataToGoogleAppsScript(nama, whatsapp, items, lama, tanggal, total, 'Paket Hemat');
+        // Send data to Google Apps Script
+        sendDataToGoogleAppsScript(nama, whatsapp, alamat, destinasi, jamAmbil, items, lama, tanggal, total, 'Paket Hemat');
         
         // Reset form
         bookingFormPaket.reset();
@@ -468,73 +488,58 @@ Lama sewa: ${lama} hari`;
         document.getElementById('totalAmountPaket').textContent = 'Rp ' + total.toLocaleString('id-ID');
     }
     
-    // Function to send data to Supabase via serverless function
-    async function sendDataToSupabase(nama, whatsapp, items, lama, tanggal, total, type) {
-        try {
-            // Create the data object
-            const data = {
-                nama: nama,
-                whatsapp: whatsapp,
-                items: items,
-                lama: parseInt(lama),
-                tanggal: tanggal,
-                total: parseInt(total),
-                type: type
-            };
-            
-            // Send data to our serverless function
-            const response = await fetch('/api/bookings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            console.log('Data successfully sent to Supabase');
-        } catch (error) {
-            console.error('Error sending data:', error);
-            alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
-        }
-    }
-    
     // Function to send data to Google Apps Script
-    function sendDataToGoogleAppsScript(nama, whatsapp, items, lama, tanggal, total, type) {
-        // This is a placeholder function. To enable Google Apps Script integration:
-        // 1. Uncomment the code below
-        // 2. Replace 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL' with your actual Web App URL
+    function sendDataToGoogleAppsScript(nama, whatsapp, alamat, destinasi, jamAmbil, items, lama, tanggal, total, type) {
+        // Use the same Google Apps Script Web App URL as in referensi-database.html
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzQ5JJCg56zCsZeANKMQdoJM0kPFhDh-kkDYhomFPUV0Z7Gaft_RGyAjyePCzPTH6a9/exec';
         
-        /*
-        // Replace with your actual Google Apps Script Web App URL
-        const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+        // Create FormData object
+        const formData = new FormData();
         
-        const data = { nama, whatsapp, items, lama, tanggal, total, type };
+        // Add form data
+        formData.append('name', nama);
+        formData.append('contact_number', whatsapp);
+        formData.append('alamat', alamat);
+        formData.append('destinasi', destinasi);
+        formData.append('jam_ambil', jamAmbil);
+        formData.append('lama_sewa', lama);
+        formData.append('rental_date', tanggal);
+        formData.append('price', total);
+        formData.append('type', type);
         
+        // Format items as a string
+        let itemsString = '';
+        items.forEach((item, index) => {
+            itemsString += `${item.barang} (${item.jumlah} unit)`;
+            if (index < items.length - 1) {
+                itemsString += ', ';
+            }
+        });
+        
+        formData.append('items', itemsString);
+        
+        // Add timestamp
+        const now = new Date();
+        const timestamp = now.toISOString().slice(0, 19).replace('T', ' ');
+        formData.append('timestamp', timestamp);
+        
+        // Send data using fetch with FormData
         fetch(scriptURL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
+            body: formData
         })
         .then(response => {
             if (response.ok) {
                 console.log('Data successfully sent to Google Apps Script');
+                alert('Pesanan berhasil dikirim! Kami akan segera menghubungi Anda melalui WhatsApp.');
             } else {
                 throw new Error('Network response was not ok');
             }
         })
         .catch(error => {
             console.error('Error sending data to Google Apps Script:', error);
+            alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
         });
-        */
-        
-        // Demo alert message (remove when using Google Apps Script)
-        console.log('Google Apps Script integration is not configured. Please uncomment the code and add your Web App URL.');
     }
     
     // Smooth scrolling for navigation links
