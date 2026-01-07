@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const jumlahInput = row.querySelector('.jumlah-input');
             
             const barang = itemNameSpan.textContent;
-            const jumlah = jumlahInput.textContent;
+            const jumlah = jumlahInput.value;
             
             if (!barang || !jumlah) {
                 isValid = false;
@@ -287,7 +287,7 @@ Estimasi Jam Pengambilan: ${jamAmbil}`;
             const jumlahInput = row.querySelector('.jumlah-input');
             
             const barang = itemNameSpan.textContent;
-            const jumlah = jumlahInput.textContent;
+            const jumlah = jumlahInput.value;
             
             if (!barang || !jumlah) {
                 isValid = false;
@@ -453,7 +453,7 @@ Estimasi Jam Pengambilan: ${jamAmbil}`;
             const jumlahInput = row.querySelector('.jumlah-input');
             
             const itemName = itemNameSpan.textContent;
-            const jumlah = parseInt(jumlahInput.textContent) || 0;
+            const jumlah = parseInt(jumlahInput.value) || 0;
             
             if (itemName && jumlah > 0) {
                 const pricePerDay = itemPrices[itemName] || 0;
@@ -476,7 +476,7 @@ Estimasi Jam Pengambilan: ${jamAmbil}`;
             const jumlahInput = row.querySelector('.jumlah-input');
             
             const itemName = itemNameSpan.textContent;
-            const jumlah = parseInt(jumlahInput.textContent) || 0;
+            const jumlah = parseInt(jumlahInput.value) || 0;
             
             if (itemName && jumlah > 0) {
                 const pricePerDay = itemPrices[itemName] || 0;
@@ -491,7 +491,7 @@ Estimasi Jam Pengambilan: ${jamAmbil}`;
     // Function to send data to Google Apps Script
     function sendDataToGoogleAppsScript(nama, whatsapp, alamat, destinasi, jamAmbil, items, lama, tanggal, total, type) {
         // Use the same Google Apps Script Web App URL as in referensi-database.html
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzQ5JJCg56zCsZeANKMQdoJM0kPFhDh-kkDYhomFPUV0Z7Gaft_RGyAjyePCzPTH6a9/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwd7Mecm2SFDGDX6u72J5k_kT8M8GM3OCNjxvvPCIQppH-w6P8ygkzCSjpnYhqtbP-3/exec';
         
         // Create FormData object
         const formData = new FormData();
@@ -694,19 +694,35 @@ function initShoppingCart() {
                 quantity = parseInt(quantityInput.value) || 1;
             }
             
-            // Special handling for paket items - only one paket can be added
+            // For paket items, allow multiple identical packages to be added
             if (itemType === 'paket') {
-                // Check if there's already a paket in the form
+                // Check if the same paket already exists in the form
                 const itemSelection = document.getElementById('itemSelectionPaket');
                 if (itemSelection) {
                     const existingRows = itemSelection.querySelectorAll('.item-row');
-                    if (existingRows.length > 0) {
-                        // Ask user if they want to replace the existing paket
-                        if (!confirm(`Apakah Anda ingin mengganti paket yang sudah dipilih dengan ${itemName}?`)) {
-                            return; // User cancelled, don't add new paket
+                    let itemExists = false;
+                    
+                    for (let row of existingRows) {
+                        const itemNameSpan = row.querySelector('.item-name');
+                        if (itemNameSpan && itemNameSpan.textContent === itemName) {
+                            // Item already exists, increment quantity
+                            const jumlahInput = row.querySelector('.jumlah-input');
+                            if (jumlahInput) {
+                                const currentQuantity = parseInt(jumlahInput.textContent) || 0;
+                                jumlahInput.textContent = currentQuantity + quantity;
+                                itemExists = true;
+                                break;
+                            }
                         }
-                        // Remove existing items
-                        itemSelection.innerHTML = `<div class="item-placeholder">Belum ada paket yang ditambahkan</div>`;
+                    }
+                    
+                    // If item already exists, we don't need to add a new row
+                    if (itemExists) {
+                        // Update total calculation
+                        if (itemSelection) {
+                            itemSelection.dispatchEvent(new Event('change'));
+                        }
+                        return; // Exit early, item was already added
                     }
                 }
             }
@@ -779,7 +795,7 @@ function addToBookingForm(itemName, itemPrice, itemType, quantity = 1) {
                         <div class="item-name">${itemName}</div>
                         <div class="item-price">Rp ${itemPrice.toLocaleString('id-ID')}/hari</div>
                         <div class="item-controls">
-                            <span>Jumlah: <span class="jumlah-input">${quantity}</span></span>
+                            <span>Jumlah: <input type="number" class="jumlah-input" value="${quantity}" min="1"></span>
                             <button type="button" class="remove-item btn-secondary">Hapus</button>
                         </div>
                     </div>
@@ -800,6 +816,16 @@ function addToBookingForm(itemName, itemPrice, itemType, quantity = 1) {
                             itemSelection.appendChild(placeholder);
                         }
                         calculateTotalPaket(); // Recalculate total when item removed
+                    });
+                }
+                
+                // Add event listener to quantity input
+                const jumlahInput = itemRow.querySelector('.jumlah-input');
+                if (jumlahInput) {
+                    jumlahInput.addEventListener('change', function() {
+                        const value = parseInt(this.value) || 1;
+                        if (value < 1) this.value = 1;
+                        calculateTotalPaket(); // Recalculate total when quantity changes
                     });
                 }
             }
@@ -849,7 +875,7 @@ function addToBookingForm(itemName, itemPrice, itemType, quantity = 1) {
                         <div class="item-name">${itemName}</div>
                         <div class="item-price">Rp ${itemPrice.toLocaleString('id-ID')}/hari</div>
                         <div class="item-controls">
-                            <span>Jumlah: <span class="jumlah-input">${quantity}</span></span>
+                            <span>Jumlah: <input type="number" class="jumlah-input" value="${quantity}" min="1"></span>
                             <button type="button" class="remove-item btn-secondary">Hapus</button>
                         </div>
                     </div>
@@ -870,6 +896,16 @@ function addToBookingForm(itemName, itemPrice, itemType, quantity = 1) {
                             itemSelection.appendChild(placeholder);
                         }
                         calculateTotalSatuan(); // Recalculate total when item removed
+                    });
+                }
+                
+                // Add event listener to quantity input
+                const jumlahInput = itemRow.querySelector('.jumlah-input');
+                if (jumlahInput) {
+                    jumlahInput.addEventListener('change', function() {
+                        const value = parseInt(this.value) || 1;
+                        if (value < 1) this.value = 1;
+                        calculateTotalSatuan(); // Recalculate total when quantity changes
                     });
                 }
             }
