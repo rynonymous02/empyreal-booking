@@ -182,10 +182,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Validate time format (24-hour format HH:MM)
-        const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        if (!timeRegex.test(jamAmbil)) {
-            alert('Format jam tidak valid! Harap gunakan format 24-jam (HH:MM), contoh: 14:30');
+        // Validate time format (24-hour format, flexible input)
+        if (!validateFlexibleTime(jamAmbil)) {
+            alert('Format jam tidak valid! Harap gunakan format 24-jam (contoh: 14:30, 1430, 830, 14)');
             return;
         }
         
@@ -273,10 +272,9 @@ Estimasi Jam Pengambilan: ${jamAmbil}`;
             return;
         }
         
-        // Validate time format (24-hour format HH:MM)
-        const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        if (!timeRegex.test(jamAmbil)) {
-            alert('Format jam tidak valid! Harap gunakan format 24-jam (HH:MM), contoh: 14:30');
+        // Validate time format (24-hour format, flexible input)
+        if (!validateFlexibleTime(jamAmbil)) {
+            alert('Format jam tidak valid! Harap gunakan format 24-jam (contoh: 14:30, 1430, 830, 14)');
             return;
         }
         
@@ -917,6 +915,47 @@ function addToBookingForm(itemName, itemPrice, itemType, quantity = 1) {
     
     // Note: Removed automatic scrolling to booking form
     // Users can now click "Langsung Booking" in the popup notification to scroll to the form
+}
+
+// Function to parse time in flexible format (with or without colon)
+function parseFlexibleTime(timeInput) {
+    // Remove any non-digit characters
+    const cleanTime = timeInput.replace(/[^0-9]/g, '');
+    
+    // Check if we have a valid length (4 digits for HHMM or 3 digits for HM)
+    if (cleanTime.length === 3) {
+        // Format like 830 -> 08:30 or 930 -> 09:30
+        const hours = cleanTime.substring(0, 1);
+        const minutes = cleanTime.substring(1, 3);
+        return { hours: parseInt(hours), minutes: parseInt(minutes), isValid: true };
+    } else if (cleanTime.length === 4) {
+        // Format like 0830 or 1430 -> 08:30 or 14:30
+        const hours = cleanTime.substring(0, 2);
+        const minutes = cleanTime.substring(2, 4);
+        return { hours: parseInt(hours), minutes: parseInt(minutes), isValid: true };
+    } else if (cleanTime.length === 1 || cleanTime.length === 2) {
+        // Just hour input like 8 or 14 -> 08:00 or 14:00
+        const hours = cleanTime.substring(0, 2);
+        return { hours: parseInt(hours), minutes: 0, isValid: true };
+    }
+    
+    return { hours: 0, minutes: 0, isValid: false };
+}
+
+// Function to validate time in flexible format
+function validateFlexibleTime(timeInput) {
+    const parsed = parseFlexibleTime(timeInput);
+    
+    if (!parsed.isValid) {
+        return false;
+    }
+    
+    // Validate 24-hour format (0-23 for hours, 0-59 for minutes)
+    if (parsed.hours < 0 || parsed.hours > 23 || parsed.minutes < 0 || parsed.minutes > 59) {
+        return false;
+    }
+    
+    return true;
 }
 
 // Function to show soft popup notification
