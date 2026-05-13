@@ -83,27 +83,44 @@
       font-family: 'Syne', sans-serif;
       font-size: 1.2rem;
       letter-spacing: -.5px;
-      color: var(--navy);
+      color: var(--white);
       display: block;
       line-height: 1.1;
+      transition: color var(--transition);
     }
-    .logo-text .brand span { color: var(--blue); }
+    .logo-text .brand span { 
+      color: var(--sky);
+      transition: color var(--transition);
+    }
+    header.scrolled .logo-text .brand {
+      color: var(--navy);
+    }
+    header.scrolled .logo-text .brand span {
+      color: var(--blue);
+    }
     .logo-text .sub {
       font-size: .65rem;
-      color: var(--gray-400);
+      color: var(--white);
       letter-spacing: .08em;
       text-transform: uppercase;
+      transition: color var(--transition);
+    }
+    header.scrolled .logo-text .sub {
+      color: var(--gray-400);
     }
     .nav-links {
       display: flex;
       align-items: center;
       gap: 4px;
     }
+    header.scrolled .nav-links a {
+      color: var(--gray-600);
+    }
     .nav-links a {
       padding: 8px 16px;
       font-size: .9rem;
       font-weight: 500;
-      color: var(--gray-600);
+      color: var(--white);
       border-radius: 8px;
       transition: color var(--transition), background var(--transition);
     }
@@ -209,7 +226,7 @@
       position: absolute;
       inset: 0;
       background: linear-gradient(
-        to right,
+        to left,
         rgba(12, 74, 110, 0.92) 0%,
         rgba(2, 132, 199, 0.75) 40%,
         rgba(56, 189, 248, 0.25) 70%,
@@ -656,6 +673,13 @@
       .footer-grid { grid-template-columns: 1fr 1fr; }
       .hero-model { opacity: 0.35; }
       .hero-content { max-width: 100%; }
+      .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 74, 110, 0.6);
+      }
+      
     }
     @media (max-width: 600px) {
       .hero h1 { font-size: 2rem; }
