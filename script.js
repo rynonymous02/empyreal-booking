@@ -64,6 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize shopping cart functionality
     initShoppingCart();
     
+    // Initialize header scroll detection
+    initHeaderScrollDetection();
+    
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -230,4 +233,21 @@ function initShoppingCart() {
             window.location.href = 'booking.html';
         });
     });
+}
+
+// Function to initialize header scroll detection
+function initHeaderScrollDetection() {
+    const header = document.querySelector('header');
+    if (!header) return;
+    
+    // Listen to scroll event
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 0) {
+            // User has scrolled down
+            header.classList.add('scrolled');
+        } else {
+            // User is at the top
+            header.classList.remove('scrolled');
+        }
+    }, { passive: true });
 }
