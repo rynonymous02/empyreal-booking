@@ -480,9 +480,12 @@ function submitBooking(type) {
 
   if (cart.length === 0) { alert('Keranjang masih kosong! Tambahkan peralatan terlebih dahulu.'); return; }
 
+  const lamaInt  = parseInt(lama) || 0;
+  if (lamaInt <= 0) { alert('Mohon isi lama sewa terlebih dahulu.'); return; }
+
   const itemList = cart.map(i => '\u2022 ' + i.name + ' \xd7' + i.qty + ' (' + formatRp(i.price * i.qty) + '/hari)').join('\n');
   const perDay   = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const total    = formatRp(perDay * parseInt(lama));
+  const total    = formatRp(perDay * lamaInt);
   const tipe     = type === 'satuan' ? 'Sewa Satuan' : 'Paket Hemat';
 
   const msg = encodeURIComponent(
@@ -499,8 +502,8 @@ function submitBooking(type) {
   window.open('https://wa.me/6282139024372?text=' + msg, '_blank');
 
   const items    = cart.map(i => ({ barang: i.name, jumlah: String(i.qty) }));
-  const totalRaw = perDay * parseInt(lama);
-  sendDataToGoogleAppsScript(nama, wa, alamat, dest, jam, items, lama, tgl, totalRaw, tipe);
+  const totalRaw = perDay * lamaInt;
+  sendDataToGoogleAppsScript(nama, wa, alamat, dest, jam, items, lamaInt, tgl, totalRaw, tipe);
 }
 
 /* ============================================================= */
