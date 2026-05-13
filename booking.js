@@ -115,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
   initPhoneNumberValidation();
   initFadeInAnimations();
   initSmoothScrolling();
+  initFieldErrorClear();
   renderCart();
 });
 
@@ -241,6 +242,14 @@ function renderCart() {
   // Update total estimasi
   updateTotal('satuan');
   updateTotal('paket');
+
+  // Hapus cart error state jika keranjang sudah terisi
+  if (cart.length > 0) {
+    ['Satuan','Paket'].forEach(t => {
+      document.getElementById('cartError'+t)?.classList.remove('show');
+      document.getElementById('cartSummary'+t)?.classList.remove('cart-error');
+    });
+  }
 }
 
 /* ===== CART SUMMARY IN FORM ===== */
@@ -478,10 +487,70 @@ function submitBooking(type) {
         tgl  = document.getElementById('tgl-'+s)?.value ?? '',
         lama = document.getElementById('lama-'+s)?.value ?? '0';
 
-  if (cart.length === 0) { alert('Keranjang masih kosong! Tambahkan peralatan terlebih dahulu.'); return; }
+  // ── VALIDASI FRONTEND ──────────────────────────────────────────
+  const fields = [
+    { id: 'nama-'+s,   val: nama   },
+    { id: 'wa-'+s,     val: wa     },
+    { id: 'alamat-'+s, val: alamat },
+    { id: 'dest-'+s,   val: dest   },
+    { id: 'jam-'+s,    val: jam    },
+    { id: 'tgl-'+s,    val: tgl    },
+    { id: 'lama-'+s,   val: lama   },
+  ];
+
+  let hasError = false;
+
+  // Reset semua error state dulu
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    if (el) el.closest('.form-group')?.classList.remove('field-error');
+  });
+  const cartErrEl = document.getElementById('cartError' + (s === 'satuan' ? 'Satuan' : 'Paket'));
+  const cartBox   = document.getElementById('cartSummary' + (s === 'satuan' ? 'Satuan' : 'Paket'));
+  if (cartErrEl) cartErrEl.classList.remove('show');
+  if (cartBox)   cartBox.classList.remove('cart-error');
+  const banner = document.getElementById('alertBanner' + (s === 'satuan' ? 'Satuan' : 'Paket'));
+  if (banner) banner.classList.remove('show');
+
+  // Cek field teks kosong
+  fields.forEach(f => {
+    const isEmpty = !f.val || f.val === '0' || (f.id.startsWith('lama') && (parseInt(f.val) < 1 || isNaN(parseInt(f.val))));
+    if (isEmpty) {
+      const el = document.getElementById(f.id);
+      if (el) el.closest('.form-group')?.classList.add('field-error');
+      hasError = true;
+    }
+  });
+
+  // Cek keranjang kosong
+  if (cart.length === 0) {
+    if (cartErrEl) cartErrEl.classList.add('show');
+    if (cartBox)   cartBox.classList.add('cart-error');
+    hasError = true;
+  }
+
+  if (hasError) {
+    if (banner) banner.classList.add('show');
+    // Scroll ke banner / field pertama yang error
+    const firstError = document.querySelector('#bookingForm' + (s === 'satuan' ? 'Satuan' : 'Paket') + ' .field-error input, #bookingForm' + (s === 'satuan' ? 'Satuan' : 'Paket') + ' .field-error textarea');
+    const scrollTarget = banner || firstError;
+    if (scrollTarget) scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  // ── END VALIDASI ────────────────────────────────────────────────
+
+  // Hapus error real-time saat user mulai mengisi
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    if (el) {
+      el.addEventListener('input', function onInput() {
+        el.closest('.form-group')?.classList.remove('field-error');
+        el.removeEventListener('input', onInput);
+      }, { once: true });
+    }
+  });
 
   const lamaInt  = parseInt(lama) || 0;
-  if (lamaInt <= 0) { alert('Mohon isi lama sewa terlebih dahulu.'); return; }
 
   const itemList = cart.map(i => '\u2022 ' + i.name + ' \xd7' + i.qty + ' (' + formatRp(i.price * i.qty) + '/hari)').join('\n');
   const perDay   = cart.reduce((s, i) => s + i.price * i.qty, 0);
@@ -494,7 +563,7 @@ function submitBooking(type) {
     '\ud83d\udc64 Nama: ' + nama + '\n\ud83d\udcf1 WhatsApp: ' + wa +
     '\n\ud83c\udfe0 Alamat: ' + alamat + '\n\ud83c\udfd4\ufe0f Destinasi: ' + dest +
     '\n\ud83d\udcc5 Tanggal Sewa: ' + tgl + '\n\u23f0 Jam Pengambilan: ' + jam +
-    '\n\ud83d\udcc6 Lama Sewa: ' + lama + ' hari\n\n' +
+    '\n\ud83d\udcc6 Lama Sewa: ' + lamaInt + ' hari\n\n' +
     '\ud83c\udf92 *Barang yang Disewa:*\n' + itemList + '\n\n' +
     '\ud83d\udcb0 *Total Estimasi: ' + total + '*\n\nMohon dikonfirmasi ketersediaannya. Terima kasih!'
   );
@@ -526,6 +595,30 @@ function sendDataToGoogleAppsScript(nama, whatsapp, alamat, destinasi, jamAmbil,
   fetch(scriptURL, { method:'POST', body:fd })
     .then(r => { if (r.ok) { console.log('Terkirim ke GAS'); alert('Pesanan berhasil dikirim! Kami akan segera menghubungi Anda melalui WhatsApp.'); } else throw new Error(); })
     .catch(() => alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.'));
+}
+
+// ============================================================
+// REAL-TIME FIELD ERROR CLEAR
+// ============================================================
+function initFieldErrorClear() {
+  // Saat user mulai mengisi field yang error → hapus class merah
+  document.addEventListener('input', function(e) {
+    const fg = e.target.closest('.form-group');
+    if (fg && fg.classList.contains('field-error')) {
+      const val = e.target.value?.trim();
+      if (val && val !== '0' && parseInt(val) !== 0) {
+        fg.classList.remove('field-error');
+      }
+    }
+  });
+  document.addEventListener('change', function(e) {
+    const fg = e.target.closest('.form-group');
+    if (fg && fg.classList.contains('field-error')) {
+      const val = e.target.value?.trim();
+      if (val) fg.classList.remove('field-error');
+    }
+    // Juga clear cart error saat cart diupdate (dipanggil lewat renderCart)
+  });
 }
 
 // ============================================================
