@@ -1,883 +1,1874 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Empyreal Outdoor - Booking</title>
-    <link rel="icon" type="image/webp" href="images/logo.webp">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empyreal Outdoor - Booking & Pricelist</title>
+  <link rel="icon" type="image/webp" href="images/logo.webp">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --sky: #38BDF8;
+      --sky-light: #E0F4FF;
+      --sky-mid: #BAE6FD;
+      --blue: #0EA5E9;
+      --blue-deep: #0284C7;
+      --navy: #0C4A6E;
+      --white: #FFFFFF;
+      --off-white: #F8FAFF;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-400: #94A3B8;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1E293B;
+      --green: #22C55E;
+      --green-dark: #16A34A;
+      --shadow-sm: 0 1px 3px rgba(14,165,233,.08);
+      --shadow-md: 0 4px 24px rgba(14,165,233,.12);
+      --shadow-lg: 0 16px 48px rgba(14,165,233,.18);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: .28s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--off-white);
+      color: var(--gray-800);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; }
+
+    /* ===== NAVBAR ===== */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--gray-200), var(--shadow-sm);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-img {
+    width: 50px; 
+    height: 58px;
+    border-radius: 10px;
+    object-fit: contain; 
+    background: transparent; 
+    }
+    .logo-text .brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: -.5px;
+      color: var(--navy);
+      display: block;
+      line-height: 1.1;
+    }
+    .logo-text .brand span { color: var(--blue); }
+    .logo-text .sub { font-size: .65rem; color: var(--gray-400); letter-spacing: .08em; text-transform: uppercase; }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-links a {
+      padding: 8px 16px;
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      border-radius: 8px;
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-links a:hover { color: var(--blue); background: var(--sky-light); }
+    .nav-links a.active { color: var(--blue); background: var(--sky-light); }
+    .nav-cta {
+      background: var(--blue) !important;
+      color: var(--white) !important;
+      border-radius: 10px !important;
+      padding: 9px 20px !important;
+      font-weight: 600 !important;
+    }
+    .nav-cta:hover { background: var(--blue-deep) !important; color: var(--white) !important; }
+    .hamburger-btn {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+    }
+    .hamburger-btn span { display: block; width: 22px; height: 2px; background: var(--navy); border-radius: 2px; transition: transform var(--transition), opacity var(--transition); }
+    .hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger-btn.open span:nth-child(2) { opacity: 0; }
+    .hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 12px 24px 20px;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: all var(--transition);
+    }
+    .mobile-nav.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+    .mobile-nav a { display: block; padding: 12px 0; font-size: 1rem; font-weight: 500; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); }
+    .mobile-nav a:last-child { border: none; }
+    .mobile-nav .mob-cta { margin-top: 8px; display: block; text-align: center; background: var(--blue); color: var(--white); padding: 13px; border-radius: 12px; font-weight: 600; }
+
+    /* ===== PAGE HERO ===== */
+    .page-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--blue-deep) 60%, var(--blue) 100%);
+      padding: 110px 24px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.06);
+      top: -100px; right: -60px;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      width: 250px; height: 250px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.05);
+      bottom: -70px; left: -40px;
+    }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+    .page-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .page-hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: #fff;
+      margin-bottom: 14px;
+      letter-spacing: -.5px;
+    }
+    .page-hero h1 span { color: var(--sky); }
+    .page-hero p { color: rgba(255,255,255,.75); font-size: 1.05rem; }
+
+    /* ===== CONTAINER & LAYOUT ===== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      align-items: start;
+      padding: 48px 0 80px;
+    }
+
+    /* ===== SECTION TABS (Satuan / Paket) ===== */
+    .tab-bar {
+      display: flex;
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 14px;
+      padding: 5px;
+      gap: 4px;
+      margin: 0 auto 28px auto;
+      width: fit-content;
+    }
+    .tab-btn {
+      padding: 10px 28px;
+      border-radius: 10px;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all var(--transition);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .tab-btn.active {
+      background: var(--blue);
+      color: var(--white);
+      box-shadow: 0 3px 12px rgba(14,165,233,.3);
+    }
+    .tab-btn:not(.active):hover { color: var(--blue); background: var(--sky-light); }
+
+    /* ===== SECTION CARD ===== */
+    .section-card {
+      background: var(--white);
+      border-radius: 20px;
+      border: 1.5px solid var(--gray-200);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .section-card-header {
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-card-header-icon {
+      width: 40px; height: 40px;
+      background: var(--sky-light);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--blue);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .section-card-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      color: var(--navy);
+      font-weight: 800;
+    }
+    .section-card-header p { font-size: .8rem; color: var(--gray-400); margin-top: 2px; }
+    .section-card-body { padding: 24px 28px; }
+
+    /* ===== PRICE GRID ===== */
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .price-card {
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--white);
+      transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .price-card:hover { border-color: var(--sky); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .price-card-img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      background: var(--gray-100);
+    }
+    .price-card-img-placeholder {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: linear-gradient(135deg, var(--sky-light), var(--sky-mid));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+      color: var(--blue);
+    }
+    .price-card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+    .price-card-name { font-weight: 700; font-size: .9rem; color: var(--navy); margin-bottom: 6px; }
+    .price-card-specs {
+      display: grid;
+      gap: 3px;
+      margin-bottom: 10px;
+      flex: 1;
+    }
+    .price-card-specs li {
+      font-size: .78rem;
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .price-card-specs li::before { content: '•'; color: var(--blue); font-weight: 700; }
+    .price-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .price-tag {
+      font-weight: 800;
+      color: var(--blue-deep);
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    .avail-badge {
+      font-size: .72rem;
+      font-weight: 600;
+      background: #DCFCE7;
+      color: var(--green-dark);
+      padding: 3px 8px;
+      border-radius: 100px;
+    }
+    /* Quantity control */
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .qty-label { font-size: .75rem; color: var(--gray-400); flex: 1; }
+    .qty-ctrl {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .qty-ctrl button {
+      width: 28px; height: 28px;
+      background: var(--gray-100);
+      border: none;
+      cursor: pointer;
+      font-size: .9rem;
+      color: var(--gray-600);
+      transition: background var(--transition);
+      font-family: inherit;
+    }
+    .qty-ctrl button:hover { background: var(--sky-light); color: var(--blue); }
+    .qty-ctrl input {
+      width: 36px;
+      text-align: center;
+      border: none;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--navy);
+      outline: none;
+      font-family: inherit;
+      background: var(--white);
+    }
+    .btn-add {
+      width: 100%;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      padding: 11px;
+      font-size: .875rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background var(--transition), transform var(--transition);
+      font-family: inherit;
+    }
+    .btn-add:hover { background: var(--blue-deep); transform: translateY(-1px); }
+    .btn-add.added { background: var(--green); }
+    .btn-add.added:hover { background: var(--green-dark); }
+
+    /* Paket card (image-only style) */
+    .paket-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .paket-card {
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--white);
+      transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+    .paket-card:hover { border-color: var(--sky); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .paket-img {
+      width: 100%; aspect-ratio: 1/1;
+      object-fit: cover;
+      background: var(--gray-100);
+    }
+    .paket-img-placeholder {
+      width: 100%; aspect-ratio: 4/3;
+      background: linear-gradient(135deg, var(--sky-light), var(--sky-mid));
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px;
+      color: var(--blue);
+    }
+    .paket-img-placeholder i { font-size: 2.5rem; }
+    .paket-img-placeholder span { font-size: .85rem; font-weight: 600; }
+    .paket-card-body { padding: 14px 16px; }
+    .paket-name { font-weight: 700; font-size: .95rem; color: var(--navy); margin-bottom: 4px; }
+    .paket-price { font-family: 'Poppins', sans-serif; font-weight: 800; color: var(--blue-deep); font-size: 1rem; margin-bottom: 12px; }
+    .btn-add-paket {
+      width: 100%;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      padding: 11px;
+      font-size: .875rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      transition: background var(--transition);
+      font-family: inherit;
+    }
+    .btn-add-paket:hover { background: var(--blue-deep); }
+    .btn-add-paket.added { background: var(--green); }
+
+    /* ===== CART SIDEBAR ===== */
+    .sidebar { position: sticky; top: 100px; }
+    .cart-card {
+      background: var(--white);
+      border-radius: 20px;
+      border: 1.5px solid var(--gray-200);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .cart-header {
+      padding: 18px 22px;
+      background: linear-gradient(135deg, var(--navy), var(--blue-deep));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cart-header-left { display: flex; align-items: center; gap: 10px; }
+    .cart-header h3 { font-family: 'Syne', sans-serif; color: #fff; font-size: 1rem; }
+    .cart-count {
+      background: var(--sky);
+      color: var(--navy);
+      font-size: .72rem;
+      font-weight: 800;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cart-clear {
+      font-size: .75rem;
+      color: rgba(255,255,255,.6);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      transition: color var(--transition);
+    }
+    .cart-clear:hover { color: #fff; }
+    .cart-body { padding: 16px; }
+    .cart-empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--gray-400);
+      font-size: .875rem;
+    }
+    .cart-empty i { font-size: 2rem; display: block; margin-bottom: 10px; }
+    .cart-items { display: grid; gap: 8px; max-height: 300px; overflow-y: auto; padding-right: 4px; }
+    .cart-items::-webkit-scrollbar { width: 4px; }
+    .cart-items::-webkit-scrollbar-track { background: var(--gray-100); border-radius: 4px; }
+    .cart-items::-webkit-scrollbar-thumb { background: var(--sky-mid); border-radius: 4px; }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--off-white);
+      border-radius: 10px;
+      border: 1px solid var(--gray-200);
+    }
+    .cart-item-name { font-size: .8rem; font-weight: 600; color: var(--navy); flex: 1; line-height: 1.3; }
+    .cart-item-qty { font-size: .75rem; color: var(--gray-400); }
+    .cart-item-price { font-size: .8rem; font-weight: 700; color: var(--blue-deep); white-space: nowrap; }
+    .cart-item-del { cursor: pointer; color: var(--gray-400); font-size: .8rem; transition: color var(--transition); flex-shrink: 0; border: none; background: transparent; }
+    .cart-item-del:hover { color: #EF4444; }
+    .cart-divider { border: none; border-top: 1px dashed var(--gray-200); margin: 16px 0; }
+    .cart-footer { padding: 0 16px 16px; }
+    .cart-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .cart-total-label { font-size: .8rem; color: var(--gray-600); }
+    .cart-total-val { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--navy); }
+    .cart-note { font-size: .72rem; color: var(--gray-400); margin-bottom: 14px; }
+
+/* ===== FOOTER ===== */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,.7);
+      padding: 60px 0 32px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .footer-brand .logo-text .brand { color: #fff; }
+    .footer-brand p { font-size: .9rem; margin-top: 14px; max-width: 260px; line-height: 1.7; }
+    .footer-social { display: flex; gap: 12px; margin-top: 20px; }
+    .social-btn {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,.08);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.7);
+      font-size: .9rem;
+      transition: background var(--transition), color var(--transition);
+    }
+    .social-btn:hover { background: var(--blue); color: #fff; }
+    .footer-col h4 {
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 18px;
+      font-size: .95rem;
+    }
+    .footer-col ul { display: grid; gap: 10px; }
+    .footer-col ul li a {
+      font-size: .875rem;
+      color: rgba(255,255,255,.55);
+      transition: color var(--transition);
+    }
+    .footer-col ul li a:hover { color: var(--sky); }
+    .footer-bottom {
+      padding-top: 24px;
+      text-align: center;
+      font-size: .82rem;
+      color: rgba(255,255,255,.35);
+    }
+
+
+    /* ===== BOOKING FORM CARD ===== */
+    .booking-card {
+      background: var(--white);
+      border-radius: 20px;
+      border: 1.5px solid var(--gray-200);
+      overflow: hidden;
+    }
+    .booking-card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .booking-card-header-icon {
+      width: 40px; height: 40px;
+      background: var(--sky-light);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--blue); font-size: 1rem;
+    }
+    .booking-card-header h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; color: var(--navy); font-weight: 800; }
+    .booking-card-header p { font-size: .78rem; color: var(--gray-400); }
+    .booking-card-body { padding: 24px; }
+
+    /* ===== FORM FIELDS ===== */
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+      letter-spacing: .02em;
+    }
+    input[type="text"], input[type="tel"], input[type="number"], input[type="date"], textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: .9rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--gray-800);
+      background: var(--white);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(14,165,233,.12);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    .input-icon-wrap { position: relative; }
+    .input-icon-wrap i {
+      position: absolute;
+      left: 13px; top: 50%; transform: translateY(-50%);
+      color: var(--gray-400); font-size: .85rem;
+    }
+    .input-icon-wrap input { padding-left: 36px; }
+
+    /* Cart item summary in form */
+    .cart-summary-box {
+      background: var(--off-white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 14px;
+      min-height: 70px;
+    }
+    .cart-sum-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: .82rem;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--gray-200);
+      color: var(--gray-700);
+    }
+    .cart-sum-item:last-child { border: none; }
+    .cart-sum-empty { font-size: .82rem; color: var(--gray-400); text-align: center; padding: 10px 0; }
+
+    /* Total box */
+    .total-box {
+      background: linear-gradient(135deg, var(--sky-light), #EFF9FF);
+      border: 1.5px solid var(--sky-mid);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 18px 0;
+    }
+    .total-box-label { font-size: .85rem; color: var(--blue-deep); font-weight: 600; }
+    .total-box-val { font-family: 'Poppins', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--navy); }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--blue-deep), var(--blue));
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-shadow: 0 4px 16px rgba(14,165,233,.3);
+    }
+    .btn-submit:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(14,165,233,.4); }
+    .btn-submit:active { transform: translateY(0); }
+
+    /* Form note */
+    .form-note {
+      background: #FFFBEB;
+      border: 1.5px solid #FDE68A;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .form-note-title { font-weight: 700; font-size: .85rem; color: #92400E; display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+    .form-note ol { padding-left: 16px; }
+    .form-note ol li { font-size: .8rem; color: #78350F; margin-bottom: 4px; line-height: 1.5; }
+
+    /* ===== SUCCESS TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 100px; right: 28px;
+      background: var(--navy);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 14px;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: var(--shadow-lg);
+      z-index: 9998;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all .4s cubic-bezier(.4,0,.2,1);
+      max-width: 340px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-icon { width: 36px; height: 36px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .toast-text strong { display: block; font-size: .9rem; margin-bottom: 2px; }
+    .toast-text span { font-size: .78rem; color: rgba(255,255,255,.7); }
+
+    /* ===== FADE UP ===== */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .55s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger-btn { display: flex; }
+      .mobile-nav { display: block; }
+      .price-card-specs { display: none;}
+      .btn-add .btn-text {
+    display: none; /* Menghilangkan teks */
+  }
+      
+    }
+    @media (max-width: 600px) {
+      .section-card-body { padding: 16px; }
+      .form-row { grid-template-columns: 1fr; }
+      .price-grid { grid-template-columns: repeat(2, 1fr);gap: 12px; }
+      .paket-grid { grid-template-columns: repeat(2, 1fr);gap: 12px; }
+      .booking-card-body { padding: 12px; }
+      .price-card-name {font-size: 0.8rem;}
+      .price-tag {font-size: 0.85rem;}
+      .price-card-specs li {font-size: 0.7rem;}
+      .btn-add {padding: 8px;font-size: 0.75rem;}
+      .btn-add i {font-size: 0.7rem;}
+      .section-card {
+        border-radius: 0;           /* Hilangkan border-radius */
+        border-left: none;          /* Hilangkan border kiri */
+        border-right: none;         /* Hilangkan border kanan */
+        margin-left: -24px;         /* Geser ke kiri untuk full width */
+        margin-right: -24px;        /* Geser ke kanan untuk full width */
+        width: calc(100% + 48px);   /* Lebar ditambah padding container */
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <header>
-        <div class="container">
-            <div class="logo">
-                <img src="images/logo.webp" alt="Empyreal Outdoor Logo" class="logo-img">
-                <span class="empyreal">Empyreal</span>
-                <span class="outdoor">Outdoor</span>
-            </div>
-            <div class="menu-toggle">
-                <div class="hamburger"></div>
-                <div class="hamburger"></div>
-                <div class="hamburger"></div>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="index.html#home">Home</a></li>
-                    <li><a href="index.html#location">Lokasi</a></li>
-                    <li><a href="booking.html">Booking</a></li>
-                    <li><a href="booking.html">Pricelist</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Price List Section -->
-    <section id="pricelist" class="price-list fade-in">
-        <div class="container">
-            <h2 class="section-title">Daftar Harga</h2>
-            <div class="toggle-container">
-                <div class="toggle-switch">
-                    <input type="radio" id="satuan" name="price-toggle" value="satuan" checked>
-                    <label for="satuan">Sewa Satuan</label>
-                    <input type="radio" id="paket" name="price-toggle" value="paket">
-                    <label for="paket">Paket Hemat</label>
-                </div>
-            </div>
-            
-            <!-- Satuan Items -->
-            <div id="satuan-items" class="price-items-container">
-                <div class="price-table">
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-05.webp" alt="Tenda" class="price-icon">
-                            <h3>Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)</h3>
-                        </div>
-                        <p class="price">Rp 35.000/hari</p>
-                        <ul>
-                            <li>Kapasitas: 6-8 orang</li>
-                            <li>Waterproof</li>
-                            <li>Termasuk pasak & tali</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">1</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="1">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)" data-item-price="35000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-06.webp" alt="Tenda" class="price-icon">
-                            <h3>Tenda Kapasitas 4–5 (Tendaki Borneo 4)</h3>
-                        </div>
-                        <p class="price">Rp 29.000/hari</p>
-                        <ul>
-                            <li>Kapasitas: 4-5 orang</li>
-                            <li>Waterproof</li>
-                            <li>Termasuk pasak & tali</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="3">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Tenda Kapasitas 4–5 (Tendaki Borneo 4)" data-item-price="29000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-07.webp" alt="Tenda" class="price-icon">
-                            <h3>Tenda Kapasitas 4–5 (Wildshell Jayadipa)</h3>
-                        </div>
-                        <p class="price">Rp 29.000/hari</p>
-                        <ul>
-                            <li>Kapasitas: 4-5 orang</li>
-                            <li>Waterproof</li>
-                            <li>Termasuk pasak & tali</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="3">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Tenda Kapasitas 4–5 (Wildshell Jayadipa)" data-item-price="29000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-08.webp" alt="Carrier" class="price-icon">
-                            <h3>Carrier 60L (Arei Toba 60L)</h3>
-                        </div>
-                        <p class="price">Rp 15.000/hari</p>
-                        <ul>
-                            <li>Kapasitas: 60 liter</li>
-                            <li>Berat: 1.8 kg</li>
-                            <li>Ergonomic design</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="2">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Carrier 60L (Arei Toba 60L)" data-item-price="15000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-09.webp" alt="Kursi Lipat" class="price-icon">
-                            <h3>Kursi Lipat</h3>
-                        </div>
-                        <p class="price">Rp 9.000/hari</p>
-                        <ul>
-                            <li>Bahan: Aluminium & Polyester</li>
-                            <li>Berat: 1.5 kg</li>
-                            <li>Mudah dilipat & dibawa</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">10</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="10">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Kursi Lipat" data-item-price="9000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-10.webp" alt="Meja Lipat" class="price-icon">
-                            <h3>Meja Lipat</h3>
-                        </div>
-                        <p class="price">Rp 9.000/hari</p>
-                        <ul>
-                            <li>Bahan: Aluminium & PVC</li>
-                            <li>Ukuran: 60 x 60 cm</li>
-                            <li>Mudah dilipat & dibawa</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">5</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="5">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Meja Lipat" data-item-price="9000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-11.webp" alt="Tripod Kecil" class="price-icon">
-                            <h3>Tripod Kecil</h3>
-                        </div>
-                        <p class="price">Rp 8.000/hari</p>
-                        <ul>
-                            <li>Bahan: Aluminium</li>
-                            <li>Tinggi: 120 cm</li>
-                            <li>Ringan & stabil</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="2">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Tripod Kecil" data-item-price="8000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-11.webp" alt="Tripod Besar" class="price-icon">
-                            <h3>Tripod Besar</h3>
-                        </div>
-                        <p class="price">Rp 15.000/hari</p>
-                        <ul>
-                            <li>Bahan: Aluminium</li>
-                            <li>Tinggi: 150 cm</li>
-                            <li>Stabil & kokoh</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="2">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Tripod Besar" data-item-price="15000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-12.webp" alt="Grill Pan" class="price-icon">
-                            <h3>Grill Pan</h3>
-                        </div>
-                        <p class="price">Rp 10.000/hari</p>
-                        <ul>
-                            <li>Bahan: Cast Iron</li>
-                            <li>Ukuran: 30 cm</li>
-                            <li>Mudah dibersihkan</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="2">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Grill Pan" data-item-price="10000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-13.webp" alt="Kompor Kecil" class="price-icon">
-                            <h3>Kompor Kecil</h3>
-                        </div>
-                        <p class="price">Rp 9.000/hari</p>
-                        <ul>
-                            <li>Bahan: Stainless Steel</li>
-                            <li>Berat: 0.3 kg</li>
-                            <li>Hemat bahan bakar</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">4</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="4">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Kompor Kecil" data-item-price="9000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-14.webp" alt="Kompor Besar" class="price-icon">
-                            <h3>Kompor Besar</h3>
-                        </div>
-                        <p class="price">Rp 12.000/hari</p>
-                        <ul>
-                            <li>Bahan: Stainless Steel</li>
-                            <li>Berat: 0.8 kg</li>
-                            <li>Daya besar</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="2">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Kompor Besar" data-item-price="12000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-15.webp" alt="Cooking Set" class="price-icon">
-                            <h3>Cooking Set / Nesting 4 in 1</h3>
-                        </div>
-                        <p class="price">Rp 13.000/hari</p>
-                        <ul>
-                            <li>Set lengkap masak 4 in 1</li>
-                            <li>Mudah dibawa</li>
-                            <li>Anti lengket</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="3">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Cooking Set / Nesting 4 in 1" data-item-price="13000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-16.webp" alt="Cooking Set" class="price-icon">
-                            <h3>Cooking Set / Nesting 3 in 1</h3>
-                        </div>
-                        <p class="price">Rp 13.000/hari</p>
-                        <ul>
-                            <li>Set lengkap masak 3 in 1</li>
-                            <li>Mudah dibawa</li>
-                            <li>Anti lengket</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="3">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Cooking Set / Nesting 3 in 1" data-item-price="13000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-18.webp" alt="Sleeping Bag Polar" class="price-icon">
-                            <h3>Sleeping Bag Polar Biasa</h3>
-                        </div>
-                        <p class="price">Rp 8.000/hari</p>
-                        <ul>
-                            <li>Bahan: Polyester Polar</li>
-                            <li>Suhu: 5°C - 15°C</li>
-                            <li>Berat: 1.2 kg</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="2">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Sleeping Bag Polar Biasa" data-item-price="8000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-19.webp" alt="Sleeping Bag Bulu" class="price-icon">
-                            <h3>Sleeping Bag Polar Bulu</h3>
-                        </div>
-                        <p class="price">Rp 10.000/hari</p>
-                        <ul>
-                            <li>Bahan: Bulu Angsa</li>
-                            <li>Suhu: -5°C - 5°C</li>
-                            <li>Berat: 1.5 kg</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">4</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="4">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Sleeping Bag Polar Bulu" data-item-price="10000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-21.webp" alt="Flysheet" class="price-icon">
-                            <h3>Flysheet 3x4</h3>
-                        </div>
-                        <p class="price">Rp 10.000/hari</p>
-                        <ul>
-                            <li>Waterproof 100%</li>
-                            <li>Ukuran: 3x4 meter</li>
-                            <li>Termasuk pasak & tali</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">1</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="1">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Flysheet 3x4" data-item-price="10000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-22.webp" alt="Kuas" class="price-icon">
-                            <h3>Kuas</h3>
-                        </div>
-                        <p class="price">Rp 3.000/hari</p>
-                        <ul>
-                            <li>Bahan: Bulu sintetis</li>
-                            <li>Ukuran: 5 cm</li>
-                            <li>Mudah dibersihkan</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="3">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Kuas" data-item-price="3000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-23.webp" alt="Bantal Tiup" class="price-icon">
-                            <h3>Bantal Tiup</h3>
-                        </div>
-                        <p class="price">Rp 3.000/hari</p>
-                        <ul>
-                            <li>Bahan: PVC</li>
-                            <li>Ukuran: 40x60 cm</li>
-                            <li>Mudah dibawa</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">6</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="6">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Bantal Tiup" data-item-price="3000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-24.webp" alt="Matras" class="price-icon">
-                            <h3>Matras Spon</h3>
-                        </div>
-                        <p class="price">Rp 4.000/hari</p>
-                        <ul>
-                            <li>Bahan: PVC Foam</li>
-                            <li>Ukuran: 173 x 51 cm</li>
-                            <li>Berat: 0.8 kg</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">6</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="6">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Matras Spon" data-item-price="4000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-25.webp" alt="Lampu Tenda" class="price-icon">
-                            <h3>Lampu Tenda</h3>
-                        </div>
-                        <p class="price">Rp 5.000/hari</p>
-                        <ul>
-                            <li>LED 1000 lumens</li>
-                            <li>Baterai tahan 8 jam</li>
-                            <li>Mudah digantung</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">6</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="6">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Lampu Tenda" data-item-price="5000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-03.webp" alt="Headlamp Baterai" class="price-icon">
-                            <h3>Headlamp Baterai</h3>
-                        </div>
-                        <p class="price">Rp 5.000/hari</p>
-                        <ul>
-                            <li>LED 200 lumens</li>
-                            <li>Baterai tahan 6 jam</li>
-                            <li>Ringan & nyaman</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="3">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Headlamp Baterai" data-item-price="5000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-02.webp" alt="Headlamp Charge" class="price-icon">
-                            <h3>Headlamp Charge</h3>
-                        </div>
-                        <p class="price">Rp 5.000/hari</p>
-                        <ul>
-                            <li>LED 200 lumens</li>
-                            <li>USB chargeable</li>
-                            <li>Ringan & nyaman</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">4</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="4">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Headlamp Charge" data-item-price="5000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-20.webp" alt="Tiang Flysheet" class="price-icon">
-                            <h3>Tiang Flysheet</h3>
-                        </div>
-                        <p class="price">Rp 5.000/hari</p>
-                        <ul>
-                            <li>Bahan: Fiberglass</li>
-                            <li>Tinggi: 150 cm</li>
-                            <li>Ringan & kokoh</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="2">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Tiang Flysheet" data-item-price="5000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-26.webp" alt="Capit" class="price-icon">
-                            <h3>Capit</h3>
-                        </div>
-                        <p class="price">Rp 3.000/hari</p>
-                        <ul>
-                            <li>Bahan: Stainless Steel</li>
-                            <li>Panjang: 20 cm</li>
-                            <li>Anti karat</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">3</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="3">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Capit" data-item-price="3000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-01.webp" alt="Hydropack" class="price-icon">
-                            <h3>Hydropack</h3>
-                        </div>
-                        <p class="price">Rp 10.000/hari</p>
-                        <ul>
-                            <li>Kapasitas: 3L</li>
-                            <li>Bahan: Polyester</li>
-                            <li>Mudah dibawa</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">2</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="2">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Hydropack" data-item-price="10000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/item-04.webp" alt="Tracking Pole" class="price-icon">
-                            <h3>Tracking Pole</h3>
-                        </div>
-                        <p class="price">Rp 10.000/hari</p>
-                        <ul>
-                            <li>Bahan: Aluminium</li>
-                            <li>Tinggi: 120 cm</li>
-                            <li>Ringan & stabil</li>
-                        </ul>
-                        <div class="availability-info">Tersedia: <span class="available-quantity">5</span> unit</div>
-                        <div class="add-to-cart-controls">
-                            <div class="quantity-control">
-                                <label class="quantity-label">Jumlah barang</label>
-                                <input type="number" class="quantity-input" value="1" min="1" max="5">
-                            </div>
-                            <button class="btn-add-to-cart" data-item-name="Tracking Pole" data-item-price="10000">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Paket Items -->
-            <div id="paket-items" class="price-items-container" style="display: none;">
-                <div class="price-table">
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/paket-hemat01.webp" alt="Paket" class="price-icon">
-                           
-                        </div>
-                        <div class="add-to-cart-controls">
-                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 1" data-item-price="25000" data-item-type="paket">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/paket-hemat02.webp" alt="Paket" class="price-icon">
-                        </div>
-                        <div class="add-to-cart-controls">
-                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 2" data-item-price="30000" data-item-type="paket">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/paket-hemat03.webp" alt="Paket" class="price-icon">
-                        </div>
-                        <ul>
-                        </ul>
-                        <div class="add-to-cart-controls">
-                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 3" data-item-price="35000" data-item-type="paket">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/paket-hemat04.webp" alt="Paket" class="price-icon">
-                        </div>
-                        <div class="add-to-cart-controls">
-                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 4" data-item-price="40000" data-item-type="paket">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/paket-hemat05.webp" alt="Paket" class="price-icon">
-                        </div>
-                        </ul>
-                        <div class="add-to-cart-controls">
-                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 5" data-item-price="45000" data-item-type="paket">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="price-item">
-                        <div class="price-header">
-                            <img src="images/paket-hemat06.webp" alt="Paket" class="price-icon">
-                        </div>
-                        <div class="add-to-cart-controls">
-                            <button class="btn-add-to-cart" data-item-name="Paket Hemat 6" data-item-price="65000" data-item-type="paket">
-                                <i class="fas fa-shopping-cart cart-icon"></i>
-                                <span class="cart-text">Tambah ke Keranjang</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="nav-inner">
+      <a href="index.html" class="logo">
+        <img src="images/logo.webp" alt="Logo" class="logo-img">
+        <div class="logo-text">
+          <span class="brand">Empyreal <span>Outdoor</span></span>
+          <span class="sub">Rental Outdoor Malang</span>
         </div>
-    </section>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#how">Cara Sewa</a>
+        <a href="index.html#location">Lokasi</a>
+        <a href="booking.html" class="nav-cta active">Booking</a>
+      </nav>
+      <button class="hamburger-btn" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-    <!-- Booking Form Section -->
-    <section id="booking" class="booking-form fade-in">
-        <div class="container">
-            <h2 class="section-title">Form Booking</h2>
-            
-            <div class="toggle-container">
-                <div class="toggle-switch">
-                    <input type="radio" id="booking-satuan" name="booking-toggle" value="satuan" checked>
-                    <label for="booking-satuan">Sewa Satuan</label>
-                    <input type="radio" id="booking-paket" name="booking-toggle" value="paket">
-                    <label for="booking-paket">Paket Hemat</label>
-                </div>
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html#home">Home</a>
+    <a href="index.html#how">Cara Sewa</a>
+    <a href="index.html#location">Lokasi</a>
+    <a href="booking.html" class="mob-cta">Booking</a>
+  </div>
+
+  <!-- ===== PAGE HERO ===== -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-pill"><i class="fas fa-tent"></i> Booking & Pricelist</div>
+      <h1>Pilih & Booking <span>Peralatanmu</span></h1>
+      <p>Tambahkan peralatan ke keranjang, isi form, dan kami akan konfirmasi pesanan via WhatsApp.</p>
+    </div>
+  </div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="container">
+    <div class="main-layout">
+
+      <!-- LEFT COLUMN: Pricelist + Form -->
+      <div>
+
+        <!-- TAB BAR -->
+        <div class="tab-bar fade-up">
+          <button class="tab-btn active" id="tabSatuan" onclick="switchTab('satuan')">
+            <i class="fas fa-box"></i> Sewa Satuan
+          </button>
+          <button class="tab-btn" id="tabPaket" onclick="switchTab('paket')">
+            <i class="fas fa-layer-group"></i> Paket Hemat
+          </button>
+        </div>
+
+        <!-- SATUAN PRICELIST -->
+        <div id="satuanSection">
+  <div class="section-card fade-up">
+    <div class="section-card-header">
+      <div class="section-card-header-icon"><i class="fas fa-list-ul"></i></div>
+      <div>
+        <h2>Daftar Harga Satuan</h2>
+        <p>Klik "Tambah ke Keranjang" lalu isi form booking di bawah</p>
+      </div>
+    </div>
+    <div class="section-card-body">
+      <div class="price-grid" id="priceGrid">
+
+        <!-- Tenda 6-8 -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-tent"></i></div>
+          <img src="images/item-05.webp" alt="Tenda 6-8" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)</div>
+            <ul class="price-card-specs">
+              <li>Kapasitas: 6-8 orang</li>
+              <li>Waterproof</li>
+              <li>Termasuk pasak & tali</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 35.000/hari</span>
+              <span class="avail-badge">1 unit</span>
             </div>
-            
-            <!-- Satuan Booking Form -->
-            <form id="bookingFormSatuan" class="fade-in">
-                <div class="form-group">
-                    <label for="nama-satuan">Nama Lengkap</label>
-                    <input type="text" id="nama-satuan" name="nama" required>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="1" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)',35000)">
+              <i class="fas fa-cart-plus"></i>
+              
+            </button>
+          </div>
+        </div>
+
+        <!-- Tenda 4-5 Borneo -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-tent"></i></div>
+          <img src="images/item-06.webp" alt="Tenda Borneo" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Tenda Kapasitas 4–5 (Tendaki Borneo 4)</div>
+            <ul class="price-card-specs">
+              <li>Kapasitas: 4-5 orang</li>
+              <li>Waterproof</li>
+              <li>Termasuk pasak & tali</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 29.000/hari</span>
+              <span class="avail-badge">3 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="3" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Tenda Kapasitas 4–5 (Tendaki Borneo 4)',29000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Tenda Wildshell -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-tent"></i></div>
+          <img src="images/item-07.webp" alt="Tenda Wildshell" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Tenda Kapasitas 4–5 (Wildshell Jayadipa)</div>
+            <ul class="price-card-specs">
+              <li>Kapasitas: 4-5 orang</li>
+              <li>Waterproof</li>
+              <li>Termasuk pasak & tali</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 29.000/hari</span>
+              <span class="avail-badge">3 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="3" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Tenda Kapasitas 4–5 (Wildshell Jayadipa)',29000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Carrier 60L -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-backpack"></i></div>
+          <img src="images/item-08.webp" alt="Carrier" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Carrier 60L (Arei Toba 60L)</div>
+            <ul class="price-card-specs">
+              <li>Kapasitas: 60 liter</li>
+              <li>Berat: 1.8 kg</li>
+              <li>Ergonomic design</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 15.000/hari</span>
+              <span class="avail-badge">2 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="2" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Carrier 60L (Arei Toba 60L)',15000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Kursi Lipat -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-chair"></i></div>
+          <img src="images/item-09.webp" alt="Kursi Lipat" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Kursi Lipat</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Aluminium & Polyester</li>
+              <li>Berat: 1.5 kg</li>
+              <li>Mudah dilipat & dibawa</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 9.000/hari</span>
+              <span class="avail-badge">10 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="10" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Kursi Lipat',9000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Meja Lipat -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-table"></i></div>
+          <img src="images/item-10.webp" alt="Meja Lipat" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Meja Lipat</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Aluminium & PVC</li>
+              <li>Ukuran: 60 x 60 cm</li>
+              <li>Mudah dilipat & dibawa</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 9.000/hari</span>
+              <span class="avail-badge">5 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="5" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Meja Lipat',9000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Tripod Kecil -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-camera"></i></div>
+          <img src="images/item-11.webp" alt="Tripod Kecil" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Tripod Kecil</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Aluminium</li>
+              <li>Tinggi: 120 cm</li>
+              <li>Ringan & stabil</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 8.000/hari</span>
+              <span class="avail-badge">2 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="2" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Tripod Kecil',8000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Tripod Besar -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-camera-retro"></i></div>
+          <img src="images/item-11.webp" alt="Tripod Besar" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Tripod Besar</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Aluminium</li>
+              <li>Tinggi: 150 cm</li>
+              <li>Stabil & kokoh</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 15.000/hari</span>
+              <span class="avail-badge">2 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="2" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Tripod Besar',15000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Grill Pan -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-fire-burner"></i></div>
+          <img src="images/item-12.webp" alt="Grill Pan" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Grill Pan</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Cast Iron</li>
+              <li>Ukuran: 30 cm</li>
+              <li>Mudah dibersihkan</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 10.000/hari</span>
+              <span class="avail-badge">2 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="2" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Grill Pan',10000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Kompor Kecil -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-fire"></i></div>
+          <img src="images/item-13.webp" alt="Kompor Kecil" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Kompor Kecil</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Stainless Steel</li>
+              <li>Berat: 0.3 kg</li>
+              <li>Hemat bahan bakar</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 9.000/hari</span>
+              <span class="avail-badge">4 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="4" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Kompor Kecil',9000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Kompor Besar (harga 12.000 sesuai old.txt) -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-fire-flame-curved"></i></div>
+          <img src="images/item-14.webp" alt="Kompor Besar" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Kompor Besar</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Stainless Steel</li>
+              <li>Berat: 0.8 kg</li>
+              <li>Daya besar</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 12.000/hari</span>
+              <span class="avail-badge">2 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="2" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Kompor Besar',12000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Cooking Set 4 in 1 -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-utensils"></i></div>
+          <img src="images/item-15.webp" alt="Cooking Set" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Cooking Set / Nesting 4 in 1</div>
+            <ul class="price-card-specs">
+              <li>Set lengkap masak 4 in 1</li>
+              <li>Mudah dibawa</li>
+              <li>Anti lengket</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 13.000/hari</span>
+              <span class="avail-badge">3 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="3" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Cooking Set / Nesting 4 in 1',13000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Cooking Set 3 in 1 -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-utensils"></i></div>
+          <img src="images/item-16.webp" alt="Cooking Set" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Cooking Set / Nesting 3 in 1</div>
+            <ul class="price-card-specs">
+              <li>Set lengkap masak 3 in 1</li>
+              <li>Mudah dibawa</li>
+              <li>Anti lengket</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 13.000/hari</span>
+              <span class="avail-badge">3 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="3" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Cooking Set / Nesting 3 in 1',13000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Sleeping Bag Polar Biasa -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-bed"></i></div>
+          <img src="images/item-18.webp" alt="Sleeping Bag Polar" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Sleeping Bag Polar Biasa</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Polyester Polar</li>
+              <li>Suhu: 5°C - 15°C</li>
+              <li>Berat: 1.2 kg</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 8.000/hari</span>
+              <span class="avail-badge">2 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="2" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Sleeping Bag Polar Biasa',8000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Sleeping Bag Polar Bulu -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-bed"></i></div>
+          <img src="images/item-19.webp" alt="Sleeping Bag Bulu" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Sleeping Bag Polar Bulu</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Bulu Angsa</li>
+              <li>Suhu: -5°C - 5°C</li>
+              <li>Berat: 1.5 kg</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 10.000/hari</span>
+              <span class="avail-badge">4 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="4" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Sleeping Bag Polar Bulu',10000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Flysheet 3x4 -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-umbrella"></i></div>
+          <img src="images/item-21.webp" alt="Flysheet" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Flysheet 3x4</div>
+            <ul class="price-card-specs">
+              <li>Waterproof 100%</li>
+              <li>Ukuran: 3x4 meter</li>
+              <li>Termasuk pasak & tali</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 10.000/hari</span>
+              <span class="avail-badge">1 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="1" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Flysheet 3x4',10000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Kuas -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-paintbrush"></i></div>
+          <img src="images/item-22.webp" alt="Kuas" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Kuas</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Bulu sintetis</li>
+              <li>Ukuran: 5 cm</li>
+              <li>Mudah dibersihkan</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 3.000/hari</span>
+              <span class="avail-badge">3 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="3" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Kuas',3000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Bantal Tiup -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-pillow"></i></div>
+          <img src="images/item-23.webp" alt="Bantal Tiup" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Bantal Tiup</div>
+            <ul class="price-card-specs">
+              <li>Bahan: PVC</li>
+              <li>Ukuran: 40x60 cm</li>
+              <li>Mudah dibawa</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 3.000/hari</span>
+              <span class="avail-badge">6 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="6" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Bantal Tiup',3000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Matras Spon -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-bed"></i></div>
+          <img src="images/item-24.webp" alt="Matras" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Matras Spon</div>
+            <ul class="price-card-specs">
+              <li>Bahan: PVC Foam</li>
+              <li>Ukuran: 173 x 51 cm</li>
+              <li>Berat: 0.8 kg</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 4.000/hari</span>
+              <span class="avail-badge">6 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="6" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Matras Spon',4000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Lampu Tenda -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-lightbulb"></i></div>
+          <img src="images/item-25.webp" alt="Lampu Tenda" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Lampu Tenda</div>
+            <ul class="price-card-specs">
+              <li>LED 1000 lumens</li>
+              <li>Baterai tahan 8 jam</li>
+              <li>Mudah digantung</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 5.000/hari</span>
+              <span class="avail-badge">6 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="6" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Lampu Tenda',5000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Headlamp Baterai -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-head-side-goggles"></i></div>
+          <img src="images/item-03.webp" alt="Headlamp Baterai" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Headlamp Baterai</div>
+            <ul class="price-card-specs">
+              <li>LED 200 lumens</li>
+              <li>Baterai tahan 6 jam</li>
+              <li>Ringan & nyaman</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 5.000/hari</span>
+              <span class="avail-badge">3 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="3" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Headlamp Baterai',5000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Headlamp Charge -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-head-side-goggles"></i></div>
+          <img src="images/item-02.webp" alt="Headlamp Charge" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Headlamp Charge</div>
+            <ul class="price-card-specs">
+              <li>LED 200 lumens</li>
+              <li>USB chargeable</li>
+              <li>Ringan & nyaman</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 5.000/hari</span>
+              <span class="avail-badge">4 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="4" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Headlamp Charge',5000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Tiang Flysheet -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-flag-checkered"></i></div>
+          <img src="images/item-20.webp" alt="Tiang Flysheet" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Tiang Flysheet</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Fiberglass</li>
+              <li>Tinggi: 150 cm</li>
+              <li>Ringan & kokoh</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 5.000/hari</span>
+              <span class="avail-badge">2 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="2" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Tiang Flysheet',5000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Capit -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-hand-peace"></i></div>
+          <img src="images/item-26.webp" alt="Capit" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Capit</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Stainless Steel</li>
+              <li>Panjang: 20 cm</li>
+              <li>Anti karat</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 3.000/hari</span>
+              <span class="avail-badge">3 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="3" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Capit',3000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Hydropack -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-droplet"></i></div>
+          <img src="images/item-01.webp" alt="Hydropack" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Hydropack</div>
+            <ul class="price-card-specs">
+              <li>Kapasitas: 3L</li>
+              <li>Bahan: Polyester</li>
+              <li>Mudah dibawa</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 10.000/hari</span>
+              <span class="avail-badge">2 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="2" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Hydropack',10000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- Tracking Pole -->
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-person-hiking"></i></div>
+          <img src="images/item-04.webp" alt="Tracking Pole" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Tracking Pole</div>
+            <ul class="price-card-specs">
+              <li>Bahan: Aluminium</li>
+              <li>Tinggi: 120 cm (adjustable)</li>
+              <li>Ringan & stabil</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 10.000/hari</span>
+              <span class="avail-badge">5 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="5" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Tracking Pole',10000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <div class="price-card">
+          <div class="price-card-img-placeholder"><i class="fas fa-tent"></i></div>
+          <img src="images/item-27.webp" alt="Tenda Bazar 2x2" class="price-card-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+          <div class="price-card-body">
+            <div class="price-card-name">Tenda Bazar Ukuran 2x2</div>
+            <ul class="price-card-specs">
+              <li>Ukuran: 2x2 meter</li>
+              <li>Waterproof</li>
+              <li>Termasuk rangka & tenda</li>
+            </ul>
+            <div class="price-badge">
+              <span class="price-tag">Rp 25.000/hari</span>
+              <span class="avail-badge">2 unit</span>
+            </div>
+            <div class="qty-row">
+              <span class="qty-label">Jumlah:</span>
+              <div class="qty-ctrl">
+                <button onclick="changeQty(this,-1)">−</button>
+                <input type="number" value="1" min="1" max="2" class="qty-input">
+                <button onclick="changeQty(this,1)">+</button>
+              </div>
+            </div>
+            <button class="btn-add" onclick="addToCart(this,'Tenda Bazar Ukuran 2x2',25000)">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /price-grid -->
+    </div>
+  </div><!-- /section-card -->
+
+  <!-- BOOKING FORM SATUAN -->
+  <div class="booking-card fade-up" id="formSatuanCard">
+    <div class="booking-card-header">
+      <div class="booking-card-header-icon"><i class="fas fa-clipboard-list"></i></div>
+      <div>
+        <h3>Form Booking — Sewa Satuan</h3>
+        <p>Isi data diri dan detail sewa Anda</p>
+      </div>
+    </div>
+    <div class="booking-card-body">
+      <form id="bookingFormSatuan" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nama-satuan"><i class="fas fa-user" style="color:var(--blue);margin-right:5px;"></i>Nama Lengkap</label>
+            <input type="text" id="nama-satuan" name="nama" placeholder="Nama lengkap Anda" required>
+          </div>
+          <div class="form-group">
+            <label for="wa-satuan"><i class="fab fa-whatsapp" style="color:var(--green);margin-right:5px;"></i>Nomor WhatsApp</label>
+            <input type="tel" id="wa-satuan" name="whatsapp" placeholder="08xx-xxxx-xxxx" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="alamat-satuan"><i class="fas fa-map-marker-alt" style="color:var(--blue);margin-right:5px;"></i>Alamat</label>
+          <textarea id="alamat-satuan" name="alamat" placeholder="Alamat lengkap untuk konfirmasi" required></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dest-satuan"><i class="fas fa-mountain" style="color:var(--blue);margin-right:5px;"></i>Destinasi</label>
+            <input type="text" id="dest-satuan" name="destinasi" placeholder="Contoh: Gunung Semeru" required>
+          </div>
+          <div class="form-group">
+            <label for="jam-satuan"><i class="fas fa-clock" style="color:var(--blue);margin-right:5px;"></i>Jam Pengambilan (Format 24 jam)</label>
+            <input type="text" id="jam-satuan" name="jamAmbil" placeholder="Contoh: 14:30" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tgl-satuan"><i class="fas fa-calendar" style="color:var(--blue);margin-right:5px;"></i>Tanggal Sewa</label>
+            <input type="date" id="tgl-satuan" name="tanggal" required>
+          </div>
+          <div class="form-group">
+            <label for="lama-satuan"><i class="fas fa-hourglass-half" style="color:var(--blue);margin-right:5px;"></i>Lama Sewa (hari)</label>
+            <input type="number" id="lama-satuan" name="lama" min="1" placeholder="1" required oninput="updateTotal('satuan')">
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-shopping-cart" style="color:var(--blue);margin-right:5px;"></i>Barang yang Disewa</label>
+          <div class="cart-summary-box" id="cartSummarySatuan">
+            <div class="cart-sum-empty">Belum ada barang. Tambahkan dari daftar di atas.</div>
+          </div>
+        </div>
+        <div class="total-box">
+          <div class="total-box-label"><i class="fas fa-calculator"></i> Total Estimasi</div>
+          <div class="total-box-val" id="totalSatuan">Rp 0</div>
+        </div>
+        <button type="submit" class="btn-submit">
+          <i class="fab fa-whatsapp"></i> Kirim Pesanan via WhatsApp
+        </button>
+        <div class="form-note">
+          <div class="form-note-title"><i class="fas fa-triangle-exclamation"></i> Catatan Penting</div>
+          <ol>
+            <li>Mengisi form dianggap sudah melakukan booking.</li>
+            <li>Pembatalan kurang dari H-1 dikenakan biaya 30% dari total sewa.</li>
+            <li>Keterlambatan pengembalian atau kerusakan barang akan dikenakan denda.</li>
+          </ol>
+        </div>
+      </form>
+    </div>
+  </div><!-- /booking form satuan -->
+</div><!-- /satuanSection -->
+
+        <!-- PAKET SECTION -->
+        <div id="paketSection" style="display:none;">
+          <div class="section-card fade-up">
+            <div class="section-card-header">
+              <div class="section-card-header-icon"><i class="fas fa-layer-group"></i></div>
+              <div>
+                <h2>Paket Hemat</h2>
+                <p>Pilih paket lengkap dengan harga lebih terjangkau</p>
+              </div>
+            </div>
+            <div class="section-card-body">
+              <div class="paket-grid">
+                <div class="paket-card">
+                  <div class="paket-img-placeholder"><i class="fas fa-box-open"></i><span>Paket Hemat 1</span></div>
+                  <img src="images/paket-hemat01.webp" alt="Paket 1" class="paket-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+                  <div class="paket-card-body">
+                    <div class="paket-name">Paket Hemat 1</div>
+                    <div class="paket-price">Rp 25.000/hari</div>
+                    <button class="btn-add-paket" onclick="addToCart(this,'Paket Hemat 1',25000)">
+                      <i class="fas fa-cart-plus"></i> Pilih Paket Ini
+                    </button>
+                  </div>
                 </div>
-                <div class="form-group">
-                    <label for="whatsapp-satuan">Nomor WhatsApp</label>
-                    <input type="tel" id="whatsapp-satuan" name="whatsapp" required>
+                <div class="paket-card">
+                  <div class="paket-img-placeholder"><i class="fas fa-box-open"></i><span>Paket Hemat 2</span></div>
+                  <img src="images/paket-hemat02.webp" alt="Paket 2" class="paket-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+                  <div class="paket-card-body">
+                    <div class="paket-name">Paket Hemat 2</div>
+                    <div class="paket-price">Rp 30.000/hari</div>
+                    <button class="btn-add-paket" onclick="addToCart(this,'Paket Hemat 2',30000)">
+                      <i class="fas fa-cart-plus"></i> Pilih Paket Ini
+                    </button>
+                  </div>
                 </div>
-                <div class="form-group">
-                    <label for="alamat-satuan">Alamat</label>
-                    <textarea id="alamat-satuan" name="alamat" required></textarea>
+                <div class="paket-card">
+                  <div class="paket-img-placeholder"><i class="fas fa-box-open"></i><span>Paket Hemat 3</span></div>
+                  <img src="images/paket-hemat03.webp" alt="Paket 3" class="paket-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+                  <div class="paket-card-body">
+                    <div class="paket-name">Paket Hemat 3</div>
+                    <div class="paket-price">Rp 35.000/hari</div>
+                    <button class="btn-add-paket" onclick="addToCart(this,'Paket Hemat 3',35000)">
+                      <i class="fas fa-cart-plus"></i> Pilih Paket Ini
+                    </button>
+                  </div>
                 </div>
-                <div class="form-group">
-                    <label for="destinasi-satuan">Destinasi</label>
-                    <input type="text" id="destinasi-satuan" name="destinasi" required>
+                <div class="paket-card">
+                  <div class="paket-img-placeholder"><i class="fas fa-box-open"></i><span>Paket Hemat 4</span></div>
+                  <img src="images/paket-hemat04.webp" alt="Paket 4" class="paket-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+                  <div class="paket-card-body">
+                    <div class="paket-name">Paket Hemat 4</div>
+                    <div class="paket-price">Rp 40.000/hari</div>
+                    <button class="btn-add-paket" onclick="addToCart(this,'Paket Hemat 4',40000)">
+                      <i class="fas fa-cart-plus"></i> Pilih Paket Ini
+                    </button>
+                  </div>
                 </div>
-                <div class="form-group">
-                    <label for="jam-ambil-satuan">Estimasi Jam Pengambilan Barang (Format 24-Jam: 00-23)</label>
-                    <input type="text" id="jam-ambil-satuan" name="jamAmbil" placeholder="Contoh: 14:30, 1430, 830, 14" required>
+                <div class="paket-card">
+                  <div class="paket-img-placeholder"><i class="fas fa-box-open"></i><span>Paket Hemat 5</span></div>
+                  <img src="images/paket-hemat05.webp" alt="Paket 5" class="paket-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+                  <div class="paket-card-body">
+                    <div class="paket-name">Paket Hemat 5</div>
+                    <div class="paket-price">Rp 45.000/hari</div>
+                    <button class="btn-add-paket" onclick="addToCart(this,'Paket Hemat 5',45000)">
+                      <i class="fas fa-cart-plus"></i> Pilih Paket Ini
+                    </button>
+                  </div>
                 </div>
-                
-                <!-- Multi Item Selection -->
-                <div class="form-group">
-                    <label>Barang yang Disewa</label>
-                    <div id="itemSelectionSatuan">
-                        <div class="item-placeholder">Belum ada barang yang ditambahkan</div>
-                    </div>
-                    <button type="button" id="addItemSatuan" class="btn-secondary" style="display:none;">Tambah Barang</button>
+                <div class="paket-card">
+                  <div class="paket-img-placeholder"><i class="fas fa-box-open"></i><span>Paket Hemat 6</span></div>
+                  <img src="images/paket-hemat06.webp" alt="Paket 6" class="paket-img" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'; this.style.display='block'">
+                  <div class="paket-card-body">
+                    <div class="paket-name">Paket Hemat 6</div>
+                    <div class="paket-price">Rp 65.000/hari</div>
+                    <button class="btn-add-paket" onclick="addToCart(this,'Paket Hemat 6',65000)">
+                      <i class="fas fa-cart-plus"></i> Pilih Paket Ini
+                    </button>
+                  </div>
                 </div>
-                
+              </div>
+            </div>
+          </div>
+
+          <!-- BOOKING FORM PAKET -->
+          <div class="booking-card fade-up" id="formPaketCard">
+            <div class="booking-card-header">
+              <div class="booking-card-header-icon"><i class="fas fa-clipboard-list"></i></div>
+              <div>
+                <h3>Form Booking — Paket Hemat</h3>
+                <p>Isi data diri dan detail sewa Anda</p>
+              </div>
+            </div>
+            <div class="booking-card-body">
+              <form id="bookingFormPaket" novalidate>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="lama-satuan">Lama Sewa (hari)</label>
-                        <input type="number" id="lama-satuan" name="lama" min="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tanggal-satuan">Tanggal Sewa</label>
-                        <input type="date" id="tanggal-satuan" name="tanggal" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="total-price">
-                        <h3>Total Estimasi: <span id="totalAmountSatuan">Rp 0</span></h3>
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn-submit">Kirim Pesanan</button>
-            </form>
-            
-            <!-- Paket Booking Form -->
-            <form id="bookingFormPaket" style="display: none;" class="fade-in">
-                <div class="form-group">
-                    <label for="nama-paket">Nama Lengkap</label>
-                    <input type="text" id="nama-paket" name="nama" required>
+                  <div class="form-group">
+                    <label for="nama-paket"><i class="fas fa-user" style="color:var(--blue);margin-right:5px;"></i>Nama Lengkap</label>
+                    <input type="text" id="nama-paket" name="nama" placeholder="Nama lengkap Anda" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="wa-paket"><i class="fab fa-whatsapp" style="color:var(--green);margin-right:5px;"></i>Nomor WhatsApp</label>
+                    <input type="tel" id="wa-paket" name="whatsapp" placeholder="08xx-xxxx-xxxx" required>
+                  </div>
                 </div>
                 <div class="form-group">
-                    <label for="whatsapp-paket">Nomor WhatsApp</label>
-                    <input type="tel" id="whatsapp-paket" name="whatsapp" required>
+                  <label for="alamat-paket"><i class="fas fa-map-marker-alt" style="color:var(--blue);margin-right:5px;"></i>Alamat</label>
+                  <textarea id="alamat-paket" name="alamat" placeholder="Alamat lengkap untuk konfirmasi" required></textarea>
                 </div>
-                <div class="form-group">
-                    <label for="alamat-paket">Alamat</label>
-                    <textarea id="alamat-paket" name="alamat" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="destinasi-paket">Destinasi</label>
-                    <input type="text" id="destinasi-paket" name="destinasi" required>
-                </div>
-                <div class="form-group">
-                    <label for="jam-ambil-paket">Estimasi Jam Pengambilan Barang (Format 24-Jam: 00-23)</label>
-                    <input type="text" id="jam-ambil-paket" name="jamAmbil" placeholder="Contoh: 14:30, 1430, 830, 14" required>
-                </div>
-                
-                <!-- Multi Item Selection for Paket -->
-                <div class="form-group">
-                    <label>Barang yang Disewa</label>
-                    <div id="itemSelectionPaket">
-                        <div class="item-placeholder">Belum ada paket yang ditambahkan</div>
-                    </div>
-                    <button type="button" id="addItemPaket" class="btn-secondary" style="display:none;">Tambah Paket</button>
-                </div>
-                
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="lama-paket">Lama Sewa (hari)</label>
-                        <input type="number" id="lama-paket" name="lama" min="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tanggal-paket">Tanggal Sewa</label>
-                        <input type="date" id="tanggal-paket" name="tanggal" required>
-                    </div>
+                  <div class="form-group">
+                    <label for="dest-paket"><i class="fas fa-mountain" style="color:var(--blue);margin-right:5px;"></i>Destinasi</label>
+                    <input type="text" id="dest-paket" name="destinasi" placeholder="Contoh: Gunung Bromo" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="jam-paket"><i class="fas fa-clock" style="color:var(--blue);margin-right:5px;"></i>Jam Pengambilan (Format 24 jam)</label>
+                    <input type="text" id="jam-paket" name="jamAmbil" placeholder="Contoh: 09:00" required>
+                  </div>
                 </div>
-                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="tgl-paket"><i class="fas fa-calendar" style="color:var(--blue);margin-right:5px;"></i>Tanggal Sewa</label>
+                    <input type="date" id="tgl-paket" name="tanggal" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="lama-paket"><i class="fas fa-hourglass-half" style="color:var(--blue);margin-right:5px;"></i>Lama Sewa (hari)</label>
+                    <input type="number" id="lama-paket" name="lama" min="1" placeholder="1" required oninput="updateTotal('paket')">
+                  </div>
+                </div>
                 <div class="form-group">
-                    <div class="total-price">
-                        <h3>Total Estimasi: <span id="totalAmountPaket">Rp 0</span></h3>
-                    </div>
+                  <label><i class="fas fa-layer-group" style="color:var(--blue);margin-right:5px;"></i>Paket yang Dipilih</label>
+                  <div class="cart-summary-box" id="cartSummaryPaket">
+                    <div class="cart-sum-empty">Belum ada paket. Pilih dari daftar di atas.</div>
+                  </div>
                 </div>
-                
-                <button type="submit" class="btn-submit">Kirim Pesanan</button>
-            </form>
-            
-            <div class="form-note">
-                <p><strong>Catatan:</strong></p>
-                <ol>
+                <div class="total-box">
+                  <div class="total-box-label"><i class="fas fa-calculator"></i> Total Estimasi</div>
+                  <div class="total-box-val" id="totalPaket">Rp 0</div>
+                </div>
+                <button type="submit" class="btn-submit">
+                  <i class="fab fa-whatsapp"></i> Kirim Pesanan via WhatsApp
+                </button>
+                <div class="form-note">
+                  <div class="form-note-title"><i class="fas fa-triangle-exclamation"></i> Catatan Penting</div>
+                  <ol>
                     <li>Mengisi form dianggap sudah melakukan booking.</li>
-                    <li>Pembatalan kurang dari H-1 dikenakan biaya 30% dari harga sewa.</li>
+                    <li>Pembatalan kurang dari H-1 dikenakan biaya 30% dari total sewa.</li>
                     <li>Keterlambatan pengembalian atau kerusakan barang akan dikenakan denda.</li>
-                </ol>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="fade-in">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="images/logo.webp" alt="Empyreal Outdoor Logo" class="logo-img">
-                    <p>Rental perlengkapan outdoor terpercaya untuk petualangan Anda</p>
+                  </ol>
                 </div>
-                <div class="footer-contact">
-                    <h3>Kontak</h3>
-                    <p><i class="fab fa-whatsapp"></i> +62821-3902-4372</p>
-                    <p><i class="fab fa-instagram"></i> <a href="https://www.instagram.com/empyrealoutdoor?igsh=NzA4aG1sdnp6MmI4" target="_blank">@empyrealoutdoor</a></p>
-                </div>
+              </form>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Empyreal Outdoor. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+          </div>
+        </div><!-- /paketSection -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="booking.js"></script>
+      </div><!-- /left column -->
+
+    </div><!-- /main-layout -->
+  </div><!-- /container -->
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <img src="images/logo.webp" alt="Logo" class="logo-img" style="width:36px;height:36px;">
+            <div class="logo-text">
+              <span class="brand" style="color:#fff;">Empyreal <span style="color:var(--sky);">Outdoor</span></span>
+            </div>
+          </a>
+          <p>Rental perlengkapan outdoor terpercaya untuk setiap petualangan Anda di Malang dan sekitarnya.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/empyrealoutdoor" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/6282139024372" target="_blank" class="social-btn"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigasi</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">Tentang Kami</a></li>
+            <li><a href="#equipment">Peralatan</a></li>
+            <li><a href="#how">Cara Sewa</a></li>
+            <li><a href="#location">Lokasi</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Layanan</h4>
+          <ul>
+            <li><a href="booking.html">Booking Online</a></li>
+            <li><a href="booking.html">Pricelist</a></li>
+            <li><a href="booking.html">Paket Hemat</a></li>
+            <li><a href="https://wa.me/6282139024372" target="_blank">Hubungi Kami</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Empyreal Outdoor Malang. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast">
+    <div class="toast-icon"><i class="fas fa-check" style="color:#fff;"></i></div>
+    <div class="toast-text">
+      <strong id="toastTitle">Berhasil ditambahkan!</strong>
+      <span id="toastBody">Barang masuk ke keranjang.</span>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="booking.js"></script>
 </body>
 </html>

@@ -1,4 +1,7 @@
-// Item prices (in IDR per day)
+// ============================================================
+// DATA: Harga & Ketersediaan Item
+// ============================================================
+
 const itemPrices = {
     "Hydropack": 10000,
     "Tracking Pole": 10000,
@@ -34,7 +37,6 @@ const itemPrices = {
     "Paket Hemat 6": 65000
 };
 
-// Item availability quantities
 const itemAvailability = {
     "Lampu Tenda": 6,
     "Tracking Pole": 5,
@@ -49,7 +51,7 @@ const itemAvailability = {
     "Kompor Besar": 2,
     "Tripod Kecil": 2,
     "Tripod Besar": 2,
-    "Kursi 2 in 1": 2, // Not in current list
+    "Kursi 2 in 1": 2,
     "Sleeping Bag Polar Biasa": 2,
     "Sleeping Bag Polar Bulu": 4,
     "Flysheet 3x4": 1,
@@ -58,7 +60,7 @@ const itemAvailability = {
     "Capit": 3,
     "Kuas": 3,
     "Carrier 60L (Arei Toba 60L)": 2,
-    "Carrier 35L": 1, // Not in current list
+    "Carrier 35L": 1,
     "Tenda Kapasitas 4–5 (Tendaki Borneo 4)": 3,
     "Tenda Kapasitas 4–5 (Wildshell Jayadipa)": 3,
     "Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)": 1,
@@ -66,7 +68,6 @@ const itemAvailability = {
     "Bantal Tiup": 6
 };
 
-// Package prices (in IDR per day)
 const packagePrices = {
     "Paket Hemat 1 - Rp 25.000/hari": 25000,
     "Paket Hemat 2 - Rp 30.000/hari": 30000,
@@ -76,897 +77,532 @@ const packagePrices = {
     "Paket Hemat 6 - Rp 65.000/hari": 65000
 };
 
-// Shopping cart array
-let shoppingCart = [];
+/* =============================================================
+   booking.js — Empyreal Outdoor
 
-// Set availability quantities on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Set availability quantities for satuan items
-    const addToCartButtons = document.querySelectorAll('.btn-add-to-cart[data-item-name]');
-    addToCartButtons.forEach(button => {
-        const itemName = button.getAttribute('data-item-name');
-        const availabilityElement = button.closest('.price-item').querySelector('.available-quantity');
-        if (availabilityElement && itemAvailability[itemName] !== undefined) {
-            availabilityElement.textContent = itemAvailability[itemName];
-            
-            // Set max attribute for quantity input (now within .quantity-control)
-            const quantityInput = button.closest('.add-to-cart-controls').querySelector('.quantity-control .quantity-input');
-            if (quantityInput) {
-                quantityInput.setAttribute('max', itemAvailability[itemName]);
-            }
-        }
-    });
-    
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('tanggal-satuan').setAttribute('min', today);
-    document.getElementById('tanggal-paket').setAttribute('min', today);
-    
-    // Initialize mobile menu toggle
-    initMobileMenu();
-    
-    // Initialize fade-in animations
-    initFadeInAnimations();
-    
-    // Initialize number-only input for phone fields
-    initPhoneNumberValidation();
-    
-    // Initialize shopping cart functionality
-    initShoppingCart();
-    
-    // Toggle between price list views
-    const priceToggleInputs = document.querySelectorAll('input[name="price-toggle"]');
-    priceToggleInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            const satuanItems = document.getElementById('satuan-items');
-            const paketItems = document.getElementById('paket-items');
-            
-            if (this.value === 'satuan') {
-                satuanItems.style.display = 'block';
-                paketItems.style.display = 'none';
-            } else {
-                satuanItems.style.display = 'none';
-                paketItems.style.display = 'block';
-            }
-        });
-    });
-    
-    // Toggle between booking forms
-    const bookingToggleInputs = document.querySelectorAll('input[name="booking-toggle"]');
-    bookingToggleInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            const satuanForm = document.getElementById('bookingFormSatuan');
-            const paketForm = document.getElementById('bookingFormPaket');
-            
-            if (this.value === 'satuan') {
-                satuanForm.style.display = 'block';
-                paketForm.style.display = 'none';
-            } else {
-                satuanForm.style.display = 'none';
-                paketForm.style.display = 'block';
-            }
-        });
-    });
-    
-    // Add event listeners for price calculation in satuan form
-    document.getElementById('itemSelectionSatuan').addEventListener('change', calculateTotalSatuan);
-    document.getElementById('itemSelectionSatuan').addEventListener('input', calculateTotalSatuan);
-    document.getElementById('lama-satuan').addEventListener('input', calculateTotalSatuan);
-    
-    // Add event listeners for price calculation in paket form
-    document.getElementById('itemSelectionPaket').addEventListener('change', calculateTotalPaket);
-    document.getElementById('itemSelectionPaket').addEventListener('input', calculateTotalPaket);
-    document.getElementById('lama-paket').addEventListener('input', calculateTotalPaket);
-    document.getElementById('tanggal-paket').addEventListener('change', calculateTotalPaket);
-    
-    // Handle satuan form submission
-    const bookingFormSatuan = document.getElementById('bookingFormSatuan');
-    bookingFormSatuan.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const nama = document.getElementById('nama-satuan').value;
-        const whatsapp = document.getElementById('whatsapp-satuan').value;
-        const alamat = document.getElementById('alamat-satuan').value;
-        const destinasi = document.getElementById('destinasi-satuan').value;
-        const jamAmbil = document.getElementById('jam-ambil-satuan').value;
-        const lama = document.getElementById('lama-satuan').value;
-        const tanggal = document.getElementById('tanggal-satuan').value;
-        
-        // Get all item rows
-        const itemRows = document.querySelectorAll('#itemSelectionSatuan .item-row');
-        const items = [];
-        
-        // Validate form
-        if (!nama || !whatsapp || !lama || !tanggal) {
-            alert('Harap lengkapi semua field!');
-            return;
-        }
-        
-        // Validate time format (24-hour format, flexible input)
-        if (!validateFlexibleTime(jamAmbil)) {
-            alert('Format jam tidak valid! Harap gunakan format 24-jam (contoh: 14:30, 1430, 830, 14)');
-            return;
-        }
-        
-        // Validate and collect items
-        let isValid = true;
-        itemRows.forEach((row, index) => {
-            const itemNameSpan = row.querySelector('.item-name');
-            const jumlahInput = row.querySelector('.jumlah-input');
-            
-            const barang = itemNameSpan.textContent;
-            const jumlah = jumlahInput.value;
-            
-            if (!barang || !jumlah) {
-                isValid = false;
-                return;
-            }
-            
-            items.push({ barang, jumlah });
-        });
-        
-        if (!isValid || items.length === 0) {
-            alert('Harap lengkapi semua barang yang ingin disewa!');
-            return;
-        }
-        
-        // Create WhatsApp message
-        let itemDetails = '';
-        let total = 0;
-        
-        items.forEach(item => {
-            const pricePerDay = itemPrices[item.barang] || 0;
-            const itemTotal = pricePerDay * parseInt(item.jumlah) * parseInt(lama);
-            total += itemTotal;
-            itemDetails += `\n- ${item.barang} (${item.jumlah} unit) x ${lama} hari = Rp ${itemTotal.toLocaleString('id-ID')}`;
-        });
-        
-        const message = `Halo, saya *${nama}* ingin menyewa beberapa barang (Sewa Satuan):
-${itemDetails}
+   FIX v2:
+   • Total estimasi = 0  → updateTotal() di-expose ke window agar
+     oninput="updateTotal(...)" di HTML bisa memanggil saat defer.
+   • Keranjang tampil kosong → cartSummary diupdate dari array cart
+     yang sama (satu sumber kebenaran).
+   • Hapus blur overlay → panel ditutup klik di luar, tanpa overlay.
+   ============================================================= */
 
-*Total: Rp ${total.toLocaleString('id-ID')}*
+const MAX_CART_UNIQUE_ITEMS = 99;
+let cart = []; // [{ name, price, qty, maxQty }]
 
-Tanggal sewa: ${tanggal}
-Lama sewa: ${lama} hari
-Alamat: ${alamat}
-Destinasi: ${destinasi}
-Estimasi Jam Pengambilan: ${jamAmbil}`;
-        const encodedMessage = encodeURIComponent(message);
-        const whatsappUrl = `https://wa.me/6282139024372?text=${encodedMessage}`;
-        
-        // Open WhatsApp in new tab
-        window.open(whatsappUrl, '_blank');
-        
-        // Send data to Google Apps Script
-        sendDataToGoogleAppsScript(nama, whatsapp, alamat, destinasi, jamAmbil, items, lama, tanggal, total, 'Sewa Satuan');
-        
-        // Reset form
-        bookingFormSatuan.reset();
-        // Keep one item row
-        const itemSelection = document.getElementById('itemSelectionSatuan');
-        itemSelection.innerHTML = `<div class="item-placeholder">Belum ada barang yang ditambahkan</div>`;
-        calculateTotalSatuan(); // Reset total display
-    });
-    
-    // Handle paket form submission
-    const bookingFormPaket = document.getElementById('bookingFormPaket');
-    bookingFormPaket.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const nama = document.getElementById('nama-paket').value;
-        const whatsapp = document.getElementById('whatsapp-paket').value;
-        const alamat = document.getElementById('alamat-paket').value;
-        const destinasi = document.getElementById('destinasi-paket').value;
-        const jamAmbil = document.getElementById('jam-ambil-paket').value;
-        const lama = document.getElementById('lama-paket').value;
-        const tanggal = document.getElementById('tanggal-paket').value;
-        
-        // Get all item rows
-        const itemRows = document.querySelectorAll('#itemSelectionPaket .item-row');
-        const items = [];
-        
-        // Validate form
-        if (!nama || !whatsapp || !lama || !tanggal) {
-            alert('Harap lengkapi semua field!');
-            return;
-        }
-        
-        // Validate time format (24-hour format, flexible input)
-        if (!validateFlexibleTime(jamAmbil)) {
-            alert('Format jam tidak valid! Harap gunakan format 24-jam (contoh: 14:30, 1430, 830, 14)');
-            return;
-        }
-        
-        // Validate and collect items
-        let isValid = true;
-        itemRows.forEach((row, index) => {
-            const itemNameSpan = row.querySelector('.item-name');
-            const jumlahInput = row.querySelector('.jumlah-input');
-            
-            const barang = itemNameSpan.textContent;
-            const jumlah = jumlahInput.value;
-            
-            if (!barang || !jumlah) {
-                isValid = false;
-                return;
-            }
-            
-            items.push({ barang, jumlah });
-        });
-        
-        if (!isValid || items.length === 0) {
-            alert('Harap lengkapi semua paket yang ingin disewa!');
-            return;
-        }
-        
-        // Create WhatsApp message
-        let itemDetails = '';
-        let total = 0;
-        
-        items.forEach(item => {
-            const pricePerDay = itemPrices[item.barang] || 0;
-            const itemTotal = pricePerDay * parseInt(item.jumlah) * parseInt(lama);
-            total += itemTotal;
-            itemDetails += `\n- ${item.barang} (${item.jumlah} unit) x ${lama} hari = Rp ${itemTotal.toLocaleString('id-ID')}`;
-        });
-        
-        const message = `Halo, saya *${nama}* ingin menyewa beberapa paket (Paket Hemat):
-${itemDetails}
+// Expose ke window — HTML pakai onclick/oninput inline (defer bisa telat)
+window.changeQty      = changeQty;
+window.addToCart      = addToCart;
+window.removeFromCart = removeFromCart;
+window.clearCart      = clearCart;
+window.updateTotal    = updateTotal;
+window.switchTab      = switchTab;
+window.scrollToBookingForm = scrollToBookingForm;
 
-*Total: Rp ${total.toLocaleString('id-ID')}*
-
-Tanggal sewa: ${tanggal}
-Lama sewa: ${lama} hari
-Alamat: ${alamat}
-Destinasi: ${destinasi}
-Estimasi Jam Pengambilan: ${jamAmbil}`;
-        const encodedMessage = encodeURIComponent(message);
-        const whatsappUrl = `https://wa.me/6282139024372?text=${encodedMessage}`;
-        
-        // Open WhatsApp in new tab
-        window.open(whatsappUrl, '_blank');
-        
-        // Send data to Google Apps Script
-        sendDataToGoogleAppsScript(nama, whatsapp, alamat, destinasi, jamAmbil, items, lama, tanggal, total, 'Paket Hemat');
-        
-        // Reset form
-        bookingFormPaket.reset();
-        // Keep one item row
-        const itemSelection = document.getElementById('itemSelectionPaket');
-        itemSelection.innerHTML = `<div class="item-placeholder">Belum ada paket yang ditambahkan</div>`;
-        calculateTotalPaket(); // Reset total display
-    });
-    
-    // Add item button functionality for satuan form
-    document.getElementById('addItemSatuan').addEventListener('click', function() {
-        const itemSelection = document.getElementById('itemSelectionSatuan');
-        const newItemRow = document.createElement('div');
-        newItemRow.className = 'item-row';
-        newItemRow.innerHTML = `
-            <select name="barang[]" class="barang-select" required>
-                <option value="">Pilih Barang</option>
-                <option value="Hydropack">Hydropack</option>
-                <option value="Tracking Pole">Tracking Pole</option>
-                <option value="Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)">Tenda Kapasitas 6–8 (Great Outdoors Drifter 4)</option>
-                <option value="Tenda Kapasitas 4–5 (Tendaki Borneo 4)">Tenda Kapasitas 4–5 (Tendaki Borneo 4)</option>
-                <option value="Tenda Kapasitas 4–5 (Wildshell Jayadipa)">Tenda Kapasitas 4–5 (Wildshell Jayadipa)</option>
-                <option value="Carrier 60L (Arei Toba 60L)">Carrier 60L (Arei Toba 60L)</option>
-                <option value="Kursi Lipat">Kursi Lipat</option>
-                <option value="Meja Lipat">Meja Lipat</option>
-                <option value="Tripod Kecil">Tripod Kecil</option>
-                <option value="Grill Pan">Grill Pan</option>
-                <option value="Kompor Kecil">Kompor Kecil</option>
-                <option value="Kompor Besar">Kompor Besar</option>
-                <option value="Cooking Set / Nesting 4 in 1">Cooking Set / Nesting 4 in 1</option>
-                <option value="Cooking Set / Nesting 3 in 1">Cooking Set / Nesting 3 in 1</option>
-                <option value="Tripod Besar">Tripod Besar</option>
-                <option value="Sleeping Bag Polar Biasa">Sleeping Bag Polar Biasa</option>
-                <option value="Sleeping Bag Polar Bulu">Sleeping Bag Polar Bulu</option>
-                <option value="Flysheet 3x4">Flysheet 3x4</option>
-                <option value="Kuas">Kuas</option>
-                <option value="Bantal Tiup">Bantal Tiup</option>
-                <option value="Matras Spon">Matras Spon</option>
-                <option value="Lampu Tenda">Lampu Tenda</option>
-                <option value="Headlamp Baterai">Headlamp Baterai</option>
-                <option value="Headlamp Charge">Headlamp Charge</option>
-                <option value="Tiang Flysheet">Tiang Flysheet</option>
-                <option value="Capit">Capit</option>
-            </select>
-            <input type="number" name="jumlah[]" class="jumlah-input" placeholder="Jumlah" min="1" value="1">
-            <button type="button" class="remove-item btn-secondary">Hapus</button>
-        `;
-        itemSelection.appendChild(newItemRow);
-        attachRemoveItemListenersSatuan();
-        calculateTotalSatuan(); // Recalculate total when new item added
-    });
-    
-    // Attach event listeners to remove buttons for satuan form
-    function attachRemoveItemListenersSatuan() {
-        document.querySelectorAll('#itemSelectionSatuan .remove-item').forEach(button => {
-            button.addEventListener('click', function() {
-                // Only remove if there's more than one item row
-                if (document.querySelectorAll('#itemSelectionSatuan .item-row').length > 1) {
-                    this.closest('.item-row').remove();
-                    calculateTotalSatuan(); // Recalculate total when item removed
-                } else {
-                    alert('Minimal harus ada satu barang yang disewa!');
-                }
-            });
-        });
-    }
-    
-    // Initial attachment of remove item listeners for satuan form
-    attachRemoveItemListenersSatuan();
-    
-    // Add item button functionality for paket form
-    document.getElementById('addItemPaket').addEventListener('click', function() {
-        const itemSelection = document.getElementById('itemSelectionPaket');
-        const newItemRow = document.createElement('div');
-        newItemRow.className = 'item-row';
-        newItemRow.innerHTML = `
-            <select name="paket[]" class="paket-select" required>
-                <option value="">Pilih Paket</option>
-                <option value="Paket Hemat 1">Paket Hemat 1 - Rp 25.000/hari</option>
-                <option value="Paket Hemat 2">Paket Hemat 2 - Rp 30.000/hari</option>
-                <option value="Paket Hemat 3">Paket Hemat 3 - Rp 35.000/hari</option>
-                <option value="Paket Hemat 4">Paket Hemat 4 - Rp 40.000/hari</option>
-                <option value="Paket Hemat 5">Paket Hemat 5 - Rp 45.000/hari</option>
-                <option value="Paket Hemat 6">Paket Hemat 6 - Rp 65.000/hari</option>
-            </select>
-            <input type="number" name="jumlah[]" class="jumlah-input" placeholder="Jumlah" min="1" value="1">
-            <button type="button" class="remove-item btn-secondary">Hapus</button>
-        `;
-        itemSelection.appendChild(newItemRow);
-        attachRemoveItemListenersPaket();
-        calculateTotalPaket(); // Recalculate total when new item added
-    });
-    
-    // Attach event listeners to remove buttons for paket form
-    function attachRemoveItemListenersPaket() {
-        document.querySelectorAll('#itemSelectionPaket .remove-item').forEach(button => {
-            button.addEventListener('click', function() {
-                // Only remove if there's more than one item row
-                if (document.querySelectorAll('#itemSelectionPaket .item-row').length > 1) {
-                    this.closest('.item-row').remove();
-                    calculateTotalPaket(); // Recalculate total when item removed
-                } else {
-                    alert('Minimal harus ada satu paket yang disewa!');
-                }
-            });
-        });
-    }
-    
-    // Initial attachment of remove item listeners for paket form
-    attachRemoveItemListenersPaket();
-    
-    // Function to calculate total price for satuan form
-    function calculateTotalSatuan() {
-        const itemRows = document.querySelectorAll('#itemSelectionSatuan .item-row');
-        const lama = parseInt(document.getElementById('lama-satuan').value) || 0;
-        let total = 0;
-        
-        itemRows.forEach(row => {
-            const itemNameSpan = row.querySelector('.item-name');
-            const jumlahInput = row.querySelector('.jumlah-input');
-            
-            const itemName = itemNameSpan.textContent;
-            const jumlah = parseInt(jumlahInput.value) || 0;
-            
-            if (itemName && jumlah > 0) {
-                const pricePerDay = itemPrices[itemName] || 0;
-                total += pricePerDay * jumlah * lama;
-            }
-        });
-        
-        // Update total display
-        document.getElementById('totalAmountSatuan').textContent = 'Rp ' + total.toLocaleString('id-ID');
-    }
-    
-    // Function to calculate total price for paket form
-    function calculateTotalPaket() {
-        const itemRows = document.querySelectorAll('#itemSelectionPaket .item-row');
-        const lama = parseInt(document.getElementById('lama-paket').value) || 0;
-        let total = 0;
-        
-        itemRows.forEach(row => {
-            const itemNameSpan = row.querySelector('.item-name');
-            const jumlahInput = row.querySelector('.jumlah-input');
-            
-            const itemName = itemNameSpan.textContent;
-            const jumlah = parseInt(jumlahInput.value) || 0;
-            
-            if (itemName && jumlah > 0) {
-                const pricePerDay = itemPrices[itemName] || 0;
-                total += pricePerDay * jumlah * lama;
-            }
-        });
-        
-        // Update total display
-        document.getElementById('totalAmountPaket').textContent = 'Rp ' + total.toLocaleString('id-ID');
-    }
-    
-    // Function to send data to Google Apps Script
-    function sendDataToGoogleAppsScript(nama, whatsapp, alamat, destinasi, jamAmbil, items, lama, tanggal, total, type) {
-        // Use the same Google Apps Script Web App URL as in referensi-database.html
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwd7Mecm2SFDGDX6u72J5k_kT8M8GM3OCNjxvvPCIQppH-w6P8ygkzCSjpnYhqtbP-3/exec';
-        
-        // Create FormData object
-        const formData = new FormData();
-        
-        // Add form data
-        formData.append('name', nama);
-        formData.append('contact_number', whatsapp);
-        formData.append('alamat', alamat);
-        formData.append('destinasi', destinasi);
-        formData.append('jam_ambil', jamAmbil);
-        formData.append('lama_sewa', lama);
-        formData.append('rental_date', tanggal);
-        formData.append('price', total);
-        formData.append('type', type);
-        
-        // Format items as a string
-        let itemsString = '';
-        items.forEach((item, index) => {
-            itemsString += `${item.barang} (${item.jumlah} unit)`;
-            if (index < items.length - 1) {
-                itemsString += ', ';
-            }
-        });
-        
-        formData.append('items', itemsString);
-        
-        // Add timestamp
-        const now = new Date();
-        const timestamp = now.toISOString().slice(0, 19).replace('T', ' ');
-        formData.append('timestamp', timestamp);
-        
-        // Send data using fetch with FormData
-        fetch(scriptURL, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log('Data successfully sent to Google Apps Script');
-                alert('Pesanan berhasil dikirim! Kami akan segera menghubungi Anda melalui WhatsApp.');
-            } else {
-                throw new Error('Network response was not ok');
-            }
-        })
-        .catch(error => {
-            console.error('Error sending data to Google Apps Script:', error);
-            alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
-        });
-    }
-    
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
+/* ============================================================= */
+document.addEventListener('DOMContentLoaded', function () {
+  const today = new Date().toISOString().split('T')[0];
+  ['tgl-satuan','tgl-paket'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('min', today);
+  });
+  initHamburger();
+  initFadeUpObserver();
+  initFloatingCart();
+  initTabSwitch();
+  initFormSubmit();
+  initPhoneNumberValidation();
+  initFadeInAnimations();
+  initSmoothScrolling();
+  renderCart();
 });
 
-// Function to initialize phone number validation
+/* ===== HAMBURGER ===== */
+function initHamburger() {
+  const h = document.getElementById('hamburger');
+  const n = document.getElementById('mobileNav');
+  if (!h || !n) return;
+  h.addEventListener('click', () => { h.classList.toggle('open'); n.classList.toggle('open'); });
+}
+
+/* ===== FADE-UP ===== */
+function initFadeUpObserver() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+}
+
+/* ===== TAB SWITCH ===== */
+function initTabSwitch() {
+  const ts = document.getElementById('tabSatuan');
+  const tp = document.getElementById('tabPaket');
+  if (ts) ts.addEventListener('click', () => switchTab('satuan'));
+  if (tp) tp.addEventListener('click', () => switchTab('paket'));
+}
+
+function switchTab(tab) {
+  const ss = document.getElementById('satuanSection');
+  const ps = document.getElementById('paketSection');
+  const ts = document.getElementById('tabSatuan');
+  const tp = document.getElementById('tabPaket');
+  if (ss) ss.style.display = tab === 'satuan' ? 'block' : 'none';
+  if (ps) ps.style.display = tab === 'paket'  ? 'block' : 'none';
+  if (ts) ts.classList.toggle('active', tab === 'satuan');
+  if (tp) tp.classList.toggle('active', tab === 'paket');
+  renderCart();
+}
+
+/* ===== QUANTITY +/- ===== */
+function changeQty(btn, delta) {
+  const ctrl  = btn.closest('.qty-ctrl');
+  const input = ctrl.querySelector('.qty-input');
+  const val   = parseInt(input.value) + delta;
+  const min   = parseInt(input.min) || 1;
+  const max   = parseInt(input.max) || 99;
+  input.value = Math.min(Math.max(val, min), max);
+}
+
+/* ===== ADD TO CART ===== */
+function addToCart(btn, name, price) {
+  const card     = btn.closest('.price-card, .paket-card');
+  const qtyInput = card ? card.querySelector('.qty-input') : null;
+  const qty      = qtyInput ? parseInt(qtyInput.value) : 1;
+  const maxQty   = qtyInput ? (parseInt(qtyInput.max) || 99) : 99;
+
+  const existing = cart.find(i => i.name === name);
+  if (existing) {
+    const newQty = existing.qty + qty;
+    if (newQty > existing.maxQty) {
+      showToastWarning(name, existing.maxQty);
+      existing.qty = existing.maxQty;
+    } else {
+      existing.qty = newQty;
+    }
+  } else {
+    if (cart.length >= MAX_CART_UNIQUE_ITEMS) {
+      showToastError('Maksimal ' + MAX_CART_UNIQUE_ITEMS + ' jenis produk di keranjang!');
+      return;
+    }
+    cart.push({ name, price, qty: Math.min(qty, maxQty), maxQty });
+  }
+
+  btn.classList.add('added');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-check"></i> Ditambahkan!';
+  setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('added'); }, 1800);
+
+  renderCart();
+  showToast(name, qty);
+  openFloatingCart();
+}
+
+/* ===== REMOVE & CLEAR ===== */
+function removeFromCart(idx) { cart.splice(idx, 1); renderCart(); }
+function clearCart() { cart = []; renderCart(); }
+
+/* ===== RENDER CART ===== */
+function renderCart() {
+  const container   = document.getElementById('cartItems');
+  const countEl     = document.getElementById('cartCount');
+  const totalDayEl  = document.getElementById('cartTotalPerDay');
+  const badgeEl     = document.getElementById('floatingCartBadge');
+
+  const totalQty    = cart.reduce((s, i) => s + i.qty, 0);
+  const totalPerDay = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+  if (badgeEl) { badgeEl.textContent = totalQty; badgeEl.style.display = totalQty > 0 ? 'flex' : 'none'; }
+  if (countEl) countEl.textContent = totalQty;
+  if (totalDayEl) totalDayEl.textContent = formatRp(totalPerDay);
+
+  if (container) {
+    if (cart.length === 0) {
+      container.innerHTML = '<div class="cart-empty"><i class="fas fa-cart-shopping"></i>Keranjang masih kosong.<br>Tambahkan peralatan dari daftar.</div>';
+    } else {
+      let html = '<div class="cart-items">';
+      cart.forEach((item, idx) => {
+        html += '<div class="cart-item">' +
+          '<div class="cart-item-name">' + item.name + '</div>' +
+          '<div class="cart-item-qty">\xd7' + item.qty + '</div>' +
+          '<div class="cart-item-price">' + formatRp(item.price * item.qty) + '</div>' +
+          '<button class="cart-item-del" onclick="removeFromCart(' + idx + ')" title="Hapus"><i class="fas fa-times"></i></button>' +
+          '</div>';
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+  }
+
+  // Update ringkasan di form booking
+  updateCartSummaryForm();
+  // Update total estimasi
+  updateTotal('satuan');
+  updateTotal('paket');
+}
+
+/* ===== CART SUMMARY IN FORM ===== */
+function updateCartSummaryForm() {
+  ['Satuan','Paket'].forEach(type => {
+    const el = document.getElementById('cartSummary' + type);
+    if (!el) return;
+    if (cart.length === 0) {
+      el.innerHTML = '<div class="cart-sum-empty">Belum ada barang. Tambahkan dari daftar di atas.</div>';
+      return;
+    }
+    el.innerHTML = cart.map(item =>
+      '<div class="cart-sum-item"><span>' + item.name + ' \xd7' + item.qty + '</span>' +
+      '<span>' + formatRp(item.price * item.qty) + '/hari</span></div>'
+    ).join('');
+  });
+}
+
+/* ===== UPDATE TOTAL ESTIMASI ===== */
+function updateTotal(type) {
+  const lamaEl  = document.getElementById('lama-' + type);
+  const totalEl = document.getElementById('total' + (type === 'satuan' ? 'Satuan' : 'Paket'));
+  if (!lamaEl || !totalEl) return;
+
+  const lama = parseInt(lamaEl.value);
+  const perDay = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+
+  if (!lama || lama <= 0) {
+    totalEl.textContent = "Pilih lama sewa"; // Jangan tampilin Rp 0 biar gak bingung
+    return;
+  }
+
+  totalEl.textContent = formatRp(perDay * lama);
+}
+
+/* ===== FORMAT RUPIAH ===== */
+function formatRp(num) { return 'Rp ' + num.toLocaleString('id-ID'); }
+
+/* ===== TOAST ===== */
+function showToast(name, qty) { _toast('Berhasil ditambahkan!', name + ' \xd7' + qty + ' masuk ke keranjang.', ''); }
+function showToastWarning(name, max) { _toast('Stok terbatas!', name + ' sudah maksimum (' + max + ' unit).', 'toast-warning'); }
+function showToastError(msg) { _toast('Tidak dapat ditambahkan', msg, 'toast-error'); }
+function showToast(name, qty) {
+  _toast('Berhasil ditambahkan!', name + ' ×' + qty + ' masuk ke keranjang.');
+}
+
+function showToastWarning(name, max) {
+  _toast('Stok terbatas!', name + ' sudah maksimum (' + max + ' unit).', 'toast-warning');
+}
+
+function showToastError(msg) {
+  _toast('Tidak dapat ditambahkan', msg, 'toast-error');
+}
+
+function showToast(name, qty) {
+  safeToast('Berhasil ditambahkan!', name + ' ×' + qty + ' masuk ke keranjang.');
+}
+function showToastWarning(name, max) {
+  safeToast('Stok terbatas!', name + ' sudah maksimum (' + max + ' unit).', 'toast-warning');
+}
+function showToastError(msg) {
+  safeToast('Tidak dapat ditambahkan', msg, 'toast-error');
+}
+
+function safeToast(title, body, className) {
+  // Hindari error total – jika toast gagal, diamkan saja
+  try {
+    const toastEl = document.getElementById('toast');
+    if (!toastEl) return;
+
+    const titleEl = document.getElementById('toastTitle');
+    const bodyEl = document.getElementById('toastBody');
+    if (titleEl) titleEl.innerText = title;
+    if (bodyEl) bodyEl.innerText = body;
+
+    // Reset class dengan aman (tanpa menghapus semua class)
+    toastEl.style.display = 'flex';
+    toastEl.style.opacity = '1';
+    toastEl.style.transform = 'translateY(0)';
+
+    // Jika mau tambah class khusus (warning/error) – amankan
+    if (className) {
+      toastEl.classList.add(className);
+    }
+
+    // Hapus timeout sebelumnya
+    if (toastEl._hideTimeout) clearTimeout(toastEl._hideTimeout);
+    toastEl._hideTimeout = setTimeout(() => {
+      try {
+        toastEl.style.opacity = '0';
+        toastEl.style.transform = 'translateY(100px)';
+        if (className) toastEl.classList.remove(className);
+        setTimeout(() => {
+          if (toastEl) toastEl.style.display = 'none';
+        }, 400);
+      } catch(e) {}
+    }, 3000);
+  } catch (err) {
+    // Jangan biarkan error mengganggu aplikasi utama
+    console.warn('Toast gagal ditampilkan:', err);
+  }
+}
+
+/* ============================================================= */
+/*  FLOATING CART — tanpa overlay blur                            */
+/* ============================================================= */
+function initFloatingCart() {
+  injectFloatingCartHTML();
+  injectFloatingCartStyles();
+
+  const trigger = document.getElementById('floatingCartTrigger');
+  const close   = document.getElementById('floatingCartClose');
+
+  if (trigger) trigger.addEventListener('click', e => { e.stopPropagation(); toggleFloatingCart(); });
+  if (close)   close.addEventListener('click',   e => { e.stopPropagation(); closeFloatingCart(); });
+
+  // Klik di luar panel → tutup
+  document.addEventListener('click', e => {
+    const panel   = document.getElementById('floatingCartPanel');
+    const trigger = document.getElementById('floatingCartTrigger');
+    if (!panel || !panel.classList.contains('open')) return;
+    if (!panel.contains(e.target) && trigger && !trigger.contains(e.target)) closeFloatingCart();
+  });
+
+  renderCart();
+}
+
+function injectFloatingCartHTML() {
+  if (document.getElementById('floatingCartTrigger')) return;
+  const html = '' +
+    '<button id="floatingCartTrigger" class="fc-trigger" aria-label="Buka keranjang sewa">' +
+      '<i class="fas fa-shopping-cart"></i>' +
+      '<span id="floatingCartBadge" class="fc-badge" style="display:none;">0</span>' +
+    '</button>' +
+    '<div id="floatingCartPanel" class="fc-panel" role="dialog" aria-label="Keranjang Sewa">' +
+      '<div class="fc-handle-bar"></div>' +
+      '<div class="fc-panel-header">' +
+        '<div class="fc-panel-header-left">' +
+          '<i class="fas fa-shopping-cart" style="color:var(--sky);"></i>' +
+          '<h3 class="fc-panel-title">Keranjang Sewa</h3>' +
+          '<div class="cart-count" id="cartCount">0</div>' +
+        '</div>' +
+        '<button id="floatingCartClose" class="fc-close-btn"><i class="fas fa-times"></i></button>' +
+      '</div>' +
+      '<div class="fc-panel-body">' +
+        '<div id="cartItems">' +
+          '<div class="cart-empty"><i class="fas fa-cart-shopping"></i>Keranjang masih kosong.<br>Tambahkan peralatan dari daftar.</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="fc-panel-footer">' +
+        '<hr class="cart-divider">' +
+        '<div class="cart-total-row">' +
+          '<span class="cart-total-label">Total per hari</span>' +
+          '<span class="cart-total-val" id="cartTotalPerDay">Rp 0</span>' +
+        '</div>' +
+        '<div class="cart-note">*Total akhir = total/hari \xd7 lama sewa</div>' +
+        '<button class="fc-clear-btn" onclick="clearCart()"><i class="fas fa-trash-alt"></i> Hapus Semua</button>' +
+        '<button class="fc-booking-btn" onclick="scrollToBookingForm()"><i class="fas fa-arrow-down"></i> Booking Sekarang</button>' +
+      '</div>' +
+    '</div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function injectFloatingCartStyles() {
+  if (document.getElementById('floatingCartStyles')) return;
+  const css = `
+    .fc-trigger{position:fixed;bottom:28px;right:28px;z-index:1200;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--blue-deep),var(--blue));border:none;cursor:pointer;box-shadow:0 6px 24px rgba(14,165,233,.45),0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s}
+    .fc-trigger:hover{transform:scale(1.1);box-shadow:0 10px 32px rgba(14,165,233,.55)}
+    .fc-trigger:active{transform:scale(.95)}
+    .fc-badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;background:#EF4444;color:#fff;font-size:.68rem;font-weight:800;border-radius:100px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-family:'Plus Jakarta Sans',sans-serif;line-height:1}
+    .fc-panel{position:fixed;bottom:96px;right:16px;z-index:1200;width:340px;max-height:70vh;background:var(--white);border-radius:20px;border:1.5px solid var(--gray-200);box-shadow:0 16px 48px rgba(14,165,233,.2),0 4px 16px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:translateY(16px) scale(.97);pointer-events:none;transition:opacity .25s ease,transform .25s cubic-bezier(.34,1.56,.64,1);transform-origin:bottom right}
+    .fc-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:all}
+    .fc-handle-bar{width:36px;height:4px;background:var(--gray-200);border-radius:2px;margin:10px auto 0;flex-shrink:0}
+    .fc-panel-header{padding:14px 18px;background:linear-gradient(135deg,var(--navy),var(--blue-deep));display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .fc-panel-header-left{display:flex;align-items:center;gap:10px}
+    .fc-panel-title{font-family:'Poppins',sans-serif;color:#fff;font-size:1rem;font-weight:800}
+    .fc-close-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:background .2s}
+    .fc-close-btn:hover{background:rgba(255,255,255,.3)}
+    .fc-panel-body{flex:1;overflow-y:auto;padding:14px 16px 4px;min-height:80px}
+    .fc-panel-body::-webkit-scrollbar{width:4px}
+    .fc-panel-body::-webkit-scrollbar-track{background:var(--gray-100);border-radius:4px}
+    .fc-panel-body::-webkit-scrollbar-thumb{background:var(--sky-mid);border-radius:4px}
+    .fc-panel-footer{padding:0 16px 16px;flex-shrink:0}
+    .fc-clear-btn{display:flex;align-items:center;gap:6px;width:100%;justify-content:center;padding:9px;margin-top:8px;border-radius:8px;background:#FEF2F2;color:#EF4444;border:1px solid #FECACA;font-size:.8rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background .2s}
+    .fc-clear-btn:hover{background:#FEE2E2}
+    .fc-booking-btn{display:flex;align-items:center;gap:6px;width:100%;justify-content:center;padding:11px;margin-top:8px;border-radius:8px;background:linear-gradient(135deg,var(--blue-deep),var(--blue));color:#fff;border:none;font-size:.875rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(14,165,233,.35)}
+    .fc-booking-btn:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 6px 20px rgba(14,165,233,.45)}
+    .fc-booking-btn:active{transform:translateY(0)}
+    .toast.toast-warning .toast-icon{background:#F59E0B}
+    .toast.toast-error   .toast-icon{background:#EF4444}
+    .sidebar{display:none!important}
+    .main-layout{grid-template-columns:1fr!important}
+    @media(max-width:480px){.fc-panel{width:calc(100vw - 24px);right:12px;bottom:90px}.fc-trigger{bottom:20px;right:20px;width:52px;height:52px}}
+  `;
+  const style = document.createElement('style');
+  style.id = 'floatingCartStyles';
+  style.textContent = css;
+  document.head.appendChild(style);
+}
+
+function openFloatingCart()  { document.getElementById('floatingCartPanel')?.classList.add('open'); }
+function closeFloatingCart() { document.getElementById('floatingCartPanel')?.classList.remove('open'); }
+function toggleFloatingCart() {
+  const p = document.getElementById('floatingCartPanel');
+  if (!p) return;
+  p.classList.contains('open') ? closeFloatingCart() : openFloatingCart();
+}
+
+function scrollToBookingForm() {
+  closeFloatingCart();
+  // Scroll ke form yang aktif sesuai tab
+  const satuanVisible = document.getElementById('satuanSection')?.style.display !== 'none';
+  const targetId = satuanVisible ? 'formSatuanCard' : 'formPaketCard';
+  const el = document.getElementById(targetId) || document.querySelector('.booking-card');
+  if (el) {
+    const offset = 90; // kompensasi navbar sticky
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+}
+
+/* ============================================================= */
+/*  FORM SUBMIT                                                   */
+/* ============================================================= */
+function initFormSubmit() {
+  document.getElementById('bookingFormSatuan')?.addEventListener('submit', e => { e.preventDefault(); submitBooking('satuan'); });
+  document.getElementById('bookingFormPaket')?.addEventListener('submit',  e => { e.preventDefault(); submitBooking('paket'); });
+}
+
+function submitBooking(type) {
+  const s    = type;
+  const g    = id => document.getElementById(id)?.value?.trim() ?? '';
+  const nama = g('nama-'+s), wa = g('wa-'+s), alamat = g('alamat-'+s),
+        dest = g('dest-'+s), jam = g('jam-'+s),
+        tgl  = document.getElementById('tgl-'+s)?.value ?? '',
+        lama = document.getElementById('lama-'+s)?.value ?? '0';
+
+  if (cart.length === 0) { alert('Keranjang masih kosong! Tambahkan peralatan terlebih dahulu.'); return; }
+
+  const itemList = cart.map(i => '\u2022 ' + i.name + ' \xd7' + i.qty + ' (' + formatRp(i.price * i.qty) + '/hari)').join('\n');
+  const perDay   = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const total    = formatRp(perDay * parseInt(lama));
+  const tipe     = type === 'satuan' ? 'Sewa Satuan' : 'Paket Hemat';
+
+  const msg = encodeURIComponent(
+    'Halo Empyreal Outdoor, saya ingin booking peralatan:\n\n' +
+    '\ud83d\udccb *FORM BOOKING \u2014 ' + tipe.toUpperCase() + '*\n' +
+    '\ud83d\udc64 Nama: ' + nama + '\n\ud83d\udcf1 WhatsApp: ' + wa +
+    '\n\ud83c\udfe0 Alamat: ' + alamat + '\n\ud83c\udfd4\ufe0f Destinasi: ' + dest +
+    '\n\ud83d\udcc5 Tanggal Sewa: ' + tgl + '\n\u23f0 Jam Pengambilan: ' + jam +
+    '\n\ud83d\udcc6 Lama Sewa: ' + lama + ' hari\n\n' +
+    '\ud83c\udf92 *Barang yang Disewa:*\n' + itemList + '\n\n' +
+    '\ud83d\udcb0 *Total Estimasi: ' + total + '*\n\nMohon dikonfirmasi ketersediaannya. Terima kasih!'
+  );
+
+  window.open('https://wa.me/6282139024372?text=' + msg, '_blank');
+
+  const items    = cart.map(i => ({ barang: i.name, jumlah: String(i.qty) }));
+  const totalRaw = perDay * parseInt(lama);
+  sendDataToGoogleAppsScript(nama, wa, alamat, dest, jam, items, lama, tgl, totalRaw, tipe);
+}
+
+/* ============================================================= */
+/*  GOOGLE APPS SCRIPT                                            */
+/* ============================================================= */
+function sendDataToGoogleAppsScript(nama, whatsapp, alamat, destinasi, jamAmbil, items, lama, tanggal, total, type) {
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwd7Mecm2SFDGDX6u72J5k_kT8M8GM3OCNjxvvPCIQppH-w6P8ygkzCSjpnYhqtbP-3/exec';
+  const fd = new FormData();
+  fd.append('name',           nama);
+  fd.append('contact_number', whatsapp);
+  fd.append('alamat',         alamat);
+  fd.append('destinasi',      destinasi);
+  fd.append('jam_ambil',      jamAmbil);
+  fd.append('lama_sewa',      lama);
+  fd.append('rental_date',    tanggal);
+  fd.append('price',          total);
+  fd.append('type',           type);
+  fd.append('items',          items.map(i => i.barang + ' (' + i.jumlah + ' unit)').join(', '));
+  fd.append('timestamp',      new Date().toISOString().slice(0,19).replace('T',' '));
+  fetch(scriptURL, { method:'POST', body:fd })
+    .then(r => { if (r.ok) { console.log('Terkirim ke GAS'); alert('Pesanan berhasil dikirim! Kami akan segera menghubungi Anda melalui WhatsApp.'); } else throw new Error(); })
+    .catch(() => alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.'));
+}
+
+// ============================================================
+// PHONE NUMBER VALIDATION
+// ============================================================
+
 function initPhoneNumberValidation() {
-    // Get all phone number input fields
     const phoneInputs = document.querySelectorAll('input[type="tel"]');
-    
     phoneInputs.forEach(input => {
-        // Prevent non-numeric characters
         input.addEventListener('keypress', function(e) {
-            // Allow: backspace, delete, tab, escape, enter
             if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
-                // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
                 (e.keyCode === 65 && e.ctrlKey === true) ||
                 (e.keyCode === 67 && e.ctrlKey === true) ||
                 (e.keyCode === 86 && e.ctrlKey === true) ||
                 (e.keyCode === 88 && e.ctrlKey === true) ||
-                // Allow: home, end, left, right
                 (e.keyCode >= 35 && e.keyCode <= 39)) {
-                return; // Let it happen, don't do anything
+                return;
             }
-            
-            // Ensure that it is a number and stop the keypress
             if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
                 e.preventDefault();
             }
         });
-        
-        // Handle paste events
         input.addEventListener('paste', function(e) {
             e.preventDefault();
-            
-            // Get pasted data via clipboard API
             let pastedData = (e.clipboardData || window.clipboardData).getData('text');
-            
-            // Remove non-numeric characters
             pastedData = pastedData.replace(/\D/g, '');
-            
-            // Insert the cleaned data
             document.execCommand('insertText', false, pastedData);
         });
     });
 }
 
-// Function to initialize mobile menu toggle
-function initMobileMenu() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const mainNav = document.querySelector('.main-nav');
-    
-    menuToggle.addEventListener('click', function() {
-        mainNav.classList.toggle('active');
-        
-        // Hamburger animation
-        const hamburgers = document.querySelectorAll('.hamburger');
-        hamburgers.forEach(hamburger => {
-            hamburger.classList.toggle('active');
-        });
-    });
-    
-    // Close menu when clicking on a link
-    const navLinks = document.querySelectorAll('.main-nav a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            mainNav.classList.remove('active');
-            const hamburgers = document.querySelectorAll('.hamburger');
-            hamburgers.forEach(hamburger => {
-                hamburger.classList.remove('active');
-            });
-        });
-    });
-}
+// ============================================================
+// PARSE & VALIDATE FLEXIBLE TIME
+// ============================================================
 
-// Function to initialize fade-in animations
-function initFadeInAnimations() {
-    // Get all elements with the fade-in class
-    const fadeElements = document.querySelectorAll('.fade-in');
-    
-    // Set up the Intersection Observer
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Add the 'appear' class to trigger the animation
-                entry.target.classList.add('appear');
-            }
-        });
-    }, {
-        threshold: 0.1, // Trigger when 10% of the element is visible
-        rootMargin: '0px 0px -50px 0px' // Adjust the margin to trigger slightly before entering the viewport
-    });
-    
-    // Observe each element
-    fadeElements.forEach(element => {
-        observer.observe(element);
-    });
-
-    // Fallback / robustness: some mobile browsers or situations may not reliably
-    // fire IntersectionObserver callbacks (or timing may miss elements). Add a
-    // scroll/resize check and an initial forced check to ensure animations run.
-    function checkFadeElements() {
-        fadeElements.forEach(el => {
-            if (el.classList.contains('appear')) return; // already visible
-            const rect = el.getBoundingClientRect();
-            // Consider element visible if any part is within viewport minus a small offset
-            if (rect.top < (window.innerHeight || document.documentElement.clientHeight) - 50 && rect.bottom > 50) {
-                el.classList.add('appear');
-            }
-        });
-    }
-
-    // Run an initial check after a small timeout (lets layout settle on mobile)
-    setTimeout(checkFadeElements, 250);
-
-    // Add passive scroll/resize listeners as a fallback
-    window.addEventListener('scroll', checkFadeElements, { passive: true });
-    window.addEventListener('resize', checkFadeElements);
-}
-
-// Function to initialize shopping cart functionality
-function initShoppingCart() {
-    // Add event listeners to all "Add to Cart" buttons
-    const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const itemName = this.getAttribute('data-item-name');
-            const itemPrice = parseInt(this.getAttribute('data-item-price'));
-            const itemType = this.getAttribute('data-item-type') || 'satuan';
-            
-            // For paket items, quantity is always 1
-            // For satuan items, get quantity from the input field
-            let quantity = 1;
-            if (itemType !== 'paket') {
-                const quantityInput = this.closest('.add-to-cart-controls').querySelector('.quantity-control .quantity-input');
-                quantity = parseInt(quantityInput.value) || 1;
-            }
-            
-            // For paket items, allow multiple identical packages to be added
-            if (itemType === 'paket') {
-                // Check if the same paket already exists in the form
-                const itemSelection = document.getElementById('itemSelectionPaket');
-                if (itemSelection) {
-                    const existingRows = itemSelection.querySelectorAll('.item-row');
-                    let itemExists = false;
-                    
-                    for (let row of existingRows) {
-                        const itemNameSpan = row.querySelector('.item-name');
-                        if (itemNameSpan && itemNameSpan.textContent === itemName) {
-                            // Item already exists, increment quantity
-                            const jumlahInput = row.querySelector('.jumlah-input');
-                            if (jumlahInput) {
-                                const currentQuantity = parseInt(jumlahInput.textContent) || 0;
-                                jumlahInput.textContent = currentQuantity + quantity;
-                                itemExists = true;
-                                break;
-                            }
-                        }
-                    }
-                    
-                    // If item already exists, we don't need to add a new row
-                    if (itemExists) {
-                        // Update total calculation
-                        if (itemSelection) {
-                            itemSelection.dispatchEvent(new Event('change'));
-                        }
-                        return; // Exit early, item was already added
-                    }
-                }
-            }
-            
-            // Add item directly to booking form
-            addToBookingForm(itemName, itemPrice, itemType, quantity);
-            
-            // Show soft popup notification with "Langsung Booking" button
-            showNotification(`${itemName} ${itemType === 'paket' ? '' : `(${quantity} unit)`} telah ditambahkan. Silahkan cek di form booking.`, itemName, itemPrice, itemType);
-        });
-    });
-    
-    // Add event listeners to quantity inputs to enforce max limits (only for satuan items)
-    const quantityInputs = document.querySelectorAll('.quantity-input');
-    quantityInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            const max = parseInt(this.getAttribute('max')) || 10;
-            const value = parseInt(this.value) || 1;
-            
-            if (value < 1) {
-                this.value = 1;
-            } else if (value > max) {
-                this.value = max;
-            }
-        });
-    });
-}
-
-// Function to add item directly to booking form
-function addToBookingForm(itemName, itemPrice, itemType, quantity = 1) {
-    if (itemType === 'paket') {
-        // Switch to paket form
-        document.getElementById('booking-paket').checked = true;
-        document.getElementById('bookingFormSatuan').style.display = 'none';
-        document.getElementById('bookingFormPaket').style.display = 'block';
-        
-        // Add paket to paket form
-        const itemSelection = document.getElementById('itemSelectionPaket');
-        if (itemSelection) {
-            // Remove placeholder if it exists
-            const placeholder = itemSelection.querySelector('.item-placeholder');
-            if (placeholder) {
-                placeholder.remove();
-            }
-            
-            // Check if item already exists in form
-            let itemExists = false;
-            const existingRows = itemSelection.querySelectorAll('.item-row');
-            
-            for (let row of existingRows) {
-                const itemNameSpan = row.querySelector('.item-name');
-                if (itemNameSpan && itemNameSpan.textContent === itemName) {
-                    // Item already exists, increment quantity
-                    const jumlahInput = row.querySelector('.jumlah-input');
-                    if (jumlahInput) {
-                        const currentQuantity = parseInt(jumlahInput.textContent) || 0;
-                        jumlahInput.textContent = currentQuantity + quantity;
-                    }
-                    itemExists = true;
-                    break;
-                }
-            }
-            
-            // If item doesn't exist, add new row
-            if (!itemExists) {
-                const itemRow = document.createElement('div');
-                itemRow.className = 'item-row';
-                itemRow.innerHTML = `
-                    <div class="item-details">
-                        <div class="item-name">${itemName}</div>
-                        <div class="item-price">Rp ${itemPrice.toLocaleString('id-ID')}/hari</div>
-                        <div class="item-controls">
-                            <span>Jumlah: <input type="number" class="jumlah-input" value="${quantity}" min="1"></span>
-                            <button type="button" class="remove-item btn-secondary">Hapus</button>
-                        </div>
-                    </div>
-                `;
-                
-                itemSelection.appendChild(itemRow);
-                
-                // Add event listener to remove button
-                const removeButton = itemRow.querySelector('.remove-item');
-                if (removeButton) {
-                    removeButton.addEventListener('click', function() {
-                        this.closest('.item-row').remove();
-                        // Add placeholder if no items left
-                        if (itemSelection.querySelectorAll('.item-row').length === 0) {
-                            const placeholder = document.createElement('div');
-                            placeholder.className = 'item-placeholder';
-                            placeholder.textContent = 'Belum ada paket yang ditambahkan';
-                            itemSelection.appendChild(placeholder);
-                        }
-                        calculateTotalPaket(); // Recalculate total when item removed
-                    });
-                }
-                
-                // Add event listener to quantity input
-                const jumlahInput = itemRow.querySelector('.jumlah-input');
-                if (jumlahInput) {
-                    jumlahInput.addEventListener('change', function() {
-                        const value = parseInt(this.value) || 1;
-                        if (value < 1) this.value = 1;
-                        calculateTotalPaket(); // Recalculate total when quantity changes
-                    });
-                }
-            }
-            
-            // Trigger change event to update total
-            itemSelection.dispatchEvent(new Event('change'));
-        }
-    } else {
-        // Switch to satuan form
-        document.getElementById('booking-satuan').checked = true;
-        document.getElementById('bookingFormSatuan').style.display = 'block';
-        document.getElementById('bookingFormPaket').style.display = 'none';
-        
-        // Add item to satuan form
-        const itemSelection = document.getElementById('itemSelectionSatuan');
-        if (itemSelection) {
-            // Remove placeholder if it exists
-            const placeholder = itemSelection.querySelector('.item-placeholder');
-            if (placeholder) {
-                placeholder.remove();
-            }
-            
-            // Check if item already exists in form
-            let itemExists = false;
-            const existingRows = itemSelection.querySelectorAll('.item-row');
-            
-            for (let row of existingRows) {
-                const itemNameSpan = row.querySelector('.item-name');
-                if (itemNameSpan && itemNameSpan.textContent === itemName) {
-                    // Item already exists, increment quantity
-                    const jumlahInput = row.querySelector('.jumlah-input');
-                    if (jumlahInput) {
-                        const currentQuantity = parseInt(jumlahInput.textContent) || 0;
-                        jumlahInput.textContent = currentQuantity + quantity;
-                    }
-                    itemExists = true;
-                    break;
-                }
-            }
-            
-            // If item doesn't exist, add new row
-            if (!itemExists) {
-                const itemRow = document.createElement('div');
-                itemRow.className = 'item-row';
-                itemRow.innerHTML = `
-                    <div class="item-details">
-                        <div class="item-name">${itemName}</div>
-                        <div class="item-price">Rp ${itemPrice.toLocaleString('id-ID')}/hari</div>
-                        <div class="item-controls">
-                            <span>Jumlah: <input type="number" class="jumlah-input" value="${quantity}" min="1"></span>
-                            <button type="button" class="remove-item btn-secondary">Hapus</button>
-                        </div>
-                    </div>
-                `;
-                
-                itemSelection.appendChild(itemRow);
-                
-                // Add event listener to remove button
-                const removeButton = itemRow.querySelector('.remove-item');
-                if (removeButton) {
-                    removeButton.addEventListener('click', function() {
-                        this.closest('.item-row').remove();
-                        // Add placeholder if no items left
-                        if (itemSelection.querySelectorAll('.item-row').length === 0) {
-                            const placeholder = document.createElement('div');
-                            placeholder.className = 'item-placeholder';
-                            placeholder.textContent = 'Belum ada barang yang ditambahkan';
-                            itemSelection.appendChild(placeholder);
-                        }
-                        calculateTotalSatuan(); // Recalculate total when item removed
-                    });
-                }
-                
-                // Add event listener to quantity input
-                const jumlahInput = itemRow.querySelector('.jumlah-input');
-                if (jumlahInput) {
-                    jumlahInput.addEventListener('change', function() {
-                        const value = parseInt(this.value) || 1;
-                        if (value < 1) this.value = 1;
-                        calculateTotalSatuan(); // Recalculate total when quantity changes
-                    });
-                }
-            }
-            
-            // Trigger change event to update total
-            itemSelection.dispatchEvent(new Event('change'));
-        }
-    }
-    
-    // Note: Removed automatic scrolling to booking form
-    // Users can now click "Langsung Booking" in the popup notification to scroll to the form
-}
-
-// Function to parse time in flexible format (with or without colon)
 function parseFlexibleTime(timeInput) {
-    // Remove any non-digit characters
     const cleanTime = timeInput.replace(/[^0-9]/g, '');
-    
-    // Check if we have a valid length (4 digits for HHMM or 3 digits for HM)
     if (cleanTime.length === 3) {
-        // Format like 830 -> 08:30 or 930 -> 09:30
-        const hours = cleanTime.substring(0, 1);
-        const minutes = cleanTime.substring(1, 3);
-        return { hours: parseInt(hours), minutes: parseInt(minutes), isValid: true };
+        return { hours: parseInt(cleanTime.substring(0, 1)), minutes: parseInt(cleanTime.substring(1, 3)), isValid: true };
     } else if (cleanTime.length === 4) {
-        // Format like 0830 or 1430 -> 08:30 or 14:30
-        const hours = cleanTime.substring(0, 2);
-        const minutes = cleanTime.substring(2, 4);
-        return { hours: parseInt(hours), minutes: parseInt(minutes), isValid: true };
+        return { hours: parseInt(cleanTime.substring(0, 2)), minutes: parseInt(cleanTime.substring(2, 4)), isValid: true };
     } else if (cleanTime.length === 1 || cleanTime.length === 2) {
-        // Just hour input like 8 or 14 -> 08:00 or 14:00
-        const hours = cleanTime.substring(0, 2);
-        return { hours: parseInt(hours), minutes: 0, isValid: true };
+        return { hours: parseInt(cleanTime.substring(0, 2)), minutes: 0, isValid: true };
     }
-    
     return { hours: 0, minutes: 0, isValid: false };
 }
 
-// Function to validate time in flexible format
 function validateFlexibleTime(timeInput) {
     const parsed = parseFlexibleTime(timeInput);
-    
-    if (!parsed.isValid) {
-        return false;
-    }
-    
-    // Validate 24-hour format (0-23 for hours, 0-59 for minutes)
-    if (parsed.hours < 0 || parsed.hours > 23 || parsed.minutes < 0 || parsed.minutes > 59) {
-        return false;
-    }
-    
+    if (!parsed.isValid) return false;
+    if (parsed.hours < 0 || parsed.hours > 23 || parsed.minutes < 0 || parsed.minutes > 59) return false;
     return true;
 }
 
-// Function to show soft popup notification
+// ============================================================
+// SMOOTH SCROLLING
+// ============================================================
+
+function initSmoothScrolling() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({ top: targetElement.offsetTop - 80, behavior: 'smooth' });
+            }
+        });
+    });
+}
+
+// ============================================================
+// SHOW NOTIFICATION (popup soft setelah add to cart)
+// ============================================================
+
 function showNotification(message, itemName, itemPrice, itemType) {
-    // Remove any existing notifications
     const existingNotification = document.getElementById('cart-notification');
-    if (existingNotification) {
-        existingNotification.remove();
-    }
-    
-    // Create notification element
+    if (existingNotification) existingNotification.remove();
+
     const notification = document.createElement('div');
     notification.id = 'cart-notification';
     notification.className = 'cart-notification';
@@ -976,42 +612,50 @@ function showNotification(message, itemName, itemPrice, itemType) {
             <button id="langsung-booking" class="btn-primary">Langsung Booking</button>
         </div>
     `;
-    
-    // Add to document
     document.body.appendChild(notification);
-    
-    // Fade in
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 10);
-    
-    // Add event listener to the "Langsung Booking" button
+
+    setTimeout(() => notification.classList.add('show'), 10);
+
     const langsungBookingBtn = notification.querySelector('#langsung-booking');
     if (langsungBookingBtn) {
         langsungBookingBtn.addEventListener('click', function() {
-            // Scroll to booking form
             const bookingSection = document.getElementById('booking');
-            if (bookingSection) {
-                bookingSection.scrollIntoView({ behavior: 'smooth' });
-            }
-            
-            // Remove notification
+            if (bookingSection) bookingSection.scrollIntoView({ behavior: 'smooth' });
             notification.classList.remove('show');
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 300);
+            setTimeout(() => { if (notification.parentNode) notification.parentNode.removeChild(notification); }, 300);
         });
     }
-    
-    // Auto remove after 3 seconds if not clicked (as per memory requirement)
+
     setTimeout(() => {
         notification.classList.remove('show');
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
+        setTimeout(() => { if (notification.parentNode) notification.parentNode.removeChild(notification); }, 300);
     }, 3000);
+}
+
+// ============================================================
+// FADE-IN ANIMATIONS (versi lengkap dengan fallback scroll)
+// ============================================================
+
+function initFadeInAnimations() {
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('appear');
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    fadeElements.forEach(element => observer.observe(element));
+
+    function checkFadeElements() {
+        fadeElements.forEach(el => {
+            if (el.classList.contains('appear')) return;
+            const rect = el.getBoundingClientRect();
+            if (rect.top < (window.innerHeight || document.documentElement.clientHeight) - 50 && rect.bottom > 50) {
+                el.classList.add('appear');
+            }
+        });
+    }
+    setTimeout(checkFadeElements, 250);
+    window.addEventListener('scroll', checkFadeElements, { passive: true });
+    window.addEventListener('resize', checkFadeElements);
 }
