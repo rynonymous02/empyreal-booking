@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
   initFadeInAnimations();
   initSmoothScrolling();
   initFieldErrorClear();
+  initSkeletonLoaders();
   renderCart();
 });
 
@@ -754,4 +755,140 @@ function initFadeInAnimations() {
     setTimeout(checkFadeElements, 250);
     window.addEventListener('scroll', checkFadeElements, { passive: true });
     window.addEventListener('resize', checkFadeElements);
+}
+
+// ============================================================
+// SKELETON LOADING ANIMATION
+// ============================================================
+
+function initSkeletonLoaders() {
+  injectSkeletonStyles();
+  
+  // Show skeleton untuk price-cards
+  const priceCards = document.querySelectorAll('.price-card');
+  priceCards.forEach(card => {
+    showSkeletonLoading(card);
+  });
+  
+  // Show skeleton untuk paket-cards
+  const paketCards = document.querySelectorAll('.paket-card');
+  paketCards.forEach(card => {
+    showSkeletonLoading(card);
+  });
+  
+  // Simulasi loading selesai setelah 1.5 detik (bisa disesuaikan)
+  setTimeout(() => {
+    priceCards.forEach(card => hideSkeletonLoading(card));
+    paketCards.forEach(card => hideSkeletonLoading(card));
+  }, 1800);
+}
+
+function showSkeletonLoading(cardElement) {
+  // Tambahkan skeleton overlay ke card
+  if (cardElement.querySelector('.skeleton-overlay')) return; // Skip jika sudah ada
+  
+  const skeleton = document.createElement('div');
+  skeleton.className = 'skeleton-overlay';
+  skeleton.innerHTML = `
+    <div class="skeleton-img"></div>
+    <div class="skeleton-body">
+      <div class="skeleton-line skeleton-title"></div>
+      <div class="skeleton-line skeleton-text"></div>
+      <div class="skeleton-line skeleton-text short"></div>
+    </div>
+  `;
+  
+  cardElement.appendChild(skeleton);
+  cardElement.classList.add('loading');
+}
+
+function hideSkeletonLoading(cardElement) {
+  const skeleton = cardElement.querySelector('.skeleton-overlay');
+  if (skeleton) {
+    skeleton.style.opacity = '0';
+    skeleton.style.transition = 'opacity 0.5s ease-out';
+    setTimeout(() => {
+      skeleton.remove();
+      cardElement.classList.remove('loading');
+    }, 500);
+  }
+}
+
+function injectSkeletonStyles() {
+  if (document.getElementById('skeletonStyles')) return;
+  
+  const css = `
+    /* ===== SKELETON LOADING ===== */
+    @keyframes skeleton-shimmer {
+      0% {
+        background-position: -1000px 0;
+      }
+      100% {
+        background-position: 1000px 0;
+      }
+    }
+    
+    .price-card.loading, 
+    .paket-card.loading {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .skeleton-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--white);
+      z-index: 10;
+      opacity: 1;
+      transition: opacity 0.3s ease-in;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .skeleton-img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: linear-gradient(90deg, var(--gray-100) 0%, var(--gray-200) 50%, var(--gray-100) 100%);
+      background-size: 1000px 100%;
+      animation: skeleton-shimmer 2s infinite;
+    }
+    
+    .skeleton-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .skeleton-line {
+      background: linear-gradient(90deg, var(--gray-100) 0%, var(--gray-200) 50%, var(--gray-100) 100%);
+      background-size: 1000px 100%;
+      animation: skeleton-shimmer 2s infinite;
+      border-radius: 6px;
+      height: 12px;
+    }
+    
+    .skeleton-title {
+      height: 16px;
+      width: 85%;
+    }
+    
+    .skeleton-text {
+      height: 12px;
+      width: 100%;
+    }
+    
+    .skeleton-text.short {
+      width: 70%;
+    }
+  `;
+  
+  const style = document.createElement('style');
+  style.id = 'skeletonStyles';
+  style.textContent = css;
+  document.head.appendChild(style);
 }
